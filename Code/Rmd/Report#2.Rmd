@@ -11,7 +11,7 @@ The data is about student academic grades for math course of two Portuguese seco
 
 
 ```{r, echo=FALSE}
-d1=read.table("student-mat.csv",sep=";",header=TRUE)
+d1=read.table("../../Data/CSV/student-mat.csv",sep=";",header=TRUE)
 library(xtable)
 #xtable(head(d1)[, 1:10])
 ```
