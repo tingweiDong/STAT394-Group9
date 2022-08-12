@@ -39,4 +39,4 @@ Soucre: https://archive.ics.uci.edu/ml/datasets/Student+Performance
 
 There are two datasets, "student-mat.csv" is the data we analysed.
 
-R file is provided to read dataset in R, since the original spreadsheet is not so clear.
+R file is provided to read dataset in R in the ./Code/R/ folder, since the original spreadsheet is not so clear.
