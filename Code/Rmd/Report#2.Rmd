@@ -3,9 +3,13 @@ title: 'Report #2'
 author: "GROUP 9"
 classoption: 12pt
 output: bookdown::pdf_document2
+bibliography: References.bib
+link-citations: true
+biblio_style: "apalike"
 ---
 
 # Student Performance Data Set:
+
 
 The data is about student academic grades for math course of two Portuguese secondary public school during the 2005/2006 school year (Cortez and Silva, 2008). Student grades and their economic, social and demographic variables are included in the data. The data is based on the reports of two public schools (i.e., the grades of students and the number of absence days) and the questionnaire answers by the students. All of the demographic, ecnomic and social variables were collected using the questionnaire. The dataset have 395 records in total with 5 numerical variables and 28 categorical variables. The numerical variables include age, number of school absences, 1st Period grade, 2nd period grade and final period grade. The categorical variables include sex, address(urban/rural), parents highest qualification, family size, commuting time, study time and so on. The table below shows the first 5 records with 10 variables.
 
@@ -34,7 +38,7 @@ library(xtable)
 
 # Availability and Source
 
-The data is available at UCI Machine Learning Repository (https://archive.ics.uci.edu/ml/datasets/Student+Performance). The relevant paper that shows more detail description of data attribute and data analysis was written by Cortez and Silva (2008). The paper can be accessed from http://www3.dsi.uminho.pt/pcortez/student.pdf.
+The data is available at UCI Machine Learning Repository (https://archive.ics.uci.edu/ml/datasets/Student+Performance). The relevant paper that shows more detail description of data attribute and data analysis was written by Cortez and Silva (2008). The paper can be accessed from http://www3.dsi.uminho.pt/pcortez/student.pdf. [@Dataset]
 
 # Motivation and Initial Goal
 
