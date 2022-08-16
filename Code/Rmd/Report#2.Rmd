@@ -39,3 +39,29 @@ The data is available at UCI Machine Learning Repository (https://archive.ics.uc
 # Motivation and Initial Goal
 
 We are motivated by this dataset since we are students of Math and Statistics school and interested in what features have associations with overall math grade. It would be interesting to explore the performance of students in math course by demographic variables (e.g., does math grade differ by gender?). It could also be interesting to find how economic status of parent of student relates to the grade. Our initial goal of this project is to find the important predictors of student grade out of many demographic, economic and social features.
+
+
+# EDA on Dataset
+
+```{r EDAonDataset}
+df = data.frame(d1$school, d1$age, d1$studytime, d1$traveltime)
+df_num = data.frame(d1$age, d1$studytime, d1$traveltime)
+summary(df)
+
+colMeans(df_num)
+cov(df_num)
+
+#http://www.sthda.com/english/wiki/ggcorrplot-visualization-of-a-correlation-matrix-using-ggplot2
+cor(df_num)
+
+
+skewness(df_num)
+kurtosis(df_num)
+
+ggcorrplot(cor(df_num),
+method = "circle",
+hc.order = TRUE,
+type = "lower")
+
+
+```
