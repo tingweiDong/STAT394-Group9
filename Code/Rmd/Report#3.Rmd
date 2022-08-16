@@ -1,0 +1,107 @@
+---
+title: 'Report #3'
+author: "GROUP 9"
+classoption: 12pt
+output: bookdown::pdf_document2
+bibliography: ../../Reference/bib/References.bib
+link-citations: true
+biblio_style: "apalike"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(ggplot2)
+require(ggcorrplot)
+require(ggthemes)
+require(matlib)
+require(bookdown)
+require(xtable)
+require(moments)
+```
+
+# EDA
+
+## Read Data
+
+The dataset have 395 records in total with 5 numerical variables and 28 categorical variables. The numerical variables include age, number of school absences, 1st Period grade, 2nd period grade and final period grade. The categorical variables include sex, address(urban/rural), parents highest qualification, family size, commuting time, study time and so on. The table below shows the first 5 records with 10 variables.
+
+```{r, echo=FALSE}
+student=read.table("../../Data/CSV/student-mat.csv",sep=";",header=TRUE)
+#xtable(head(d1)[, 1:10])
+```
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rllrlllrrll}
+  \hline
+ & school & sex & age & address & famsize & Pstatus & Medu & Fedu & Mjob & Fjob \\ 
+  \hline
+1 & GP & F &  18 & U & GT3 & A &   4 &   4 & at\_home & teacher \\ 
+  2 & GP & F &  17 & U & GT3 & T &   1 &   1 & at\_home & other \\ 
+  3 & GP & F &  15 & U & LE3 & T &   1 &   1 & at\_home & other \\ 
+  4 & GP & F &  15 & U & GT3 & T &   4 &   2 & health & services \\ 
+  5 & GP & F &  16 & U & GT3 & T &   3 &   3 & other & other \\ 
+  6 & GP & M &  16 & U & LE3 & T &   4 &   3 & services & other \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+## Summary Table
+
+### Categorical Summary
+Three categorical variables:\
+School - student's school ('GP' - Gabriel Pereira or 'MS' - Mousinho da Silveira)\
+Sex - student's sex ('F' - female or 'M' - male)\
+Failures - number of past class failures (n if 1<=n<3, else 4)\
+
+```{r CateSum, echo=FALSE}
+student$school <- as.factor(student$school)
+student$sex <- as.factor(student$sex)
+student$failures <- as.factor(student$failures)
+df = data.frame(student$school,student$sex,student$failures)
+summary(df)
+```
+
+### Numerical Summary
+Five numerical Variables:\
+Age - student's age (from 15 to 22)\
+Absences - number of school absences (from 0 to 93)\
+G1 - first period grade (from 0 to 20)\
+G2 - second period grade (from 0 to 20)\
+G3 - final grade (from 0 to 20, output target)\
+
+Means: \
+```{r NumSum, echo=FALSE}
+df_num = data.frame(student$age, student$absences, 
+                    student$G1, student$G2, student$G3)
+colMeans(df_num)
+```
+
+Covariance matrix:\
+```{r covmat,echo=FALSE}
+cov(df_num)
+```
+
+Correlation Matrix:\
+```{r cormat,echo=FALSE}
+cor(df_num)
+```
+
+Skewness and kurtosis:\
+```{r skekur,echo=FALSE}
+skewness(df_num)
+kurtosis(df_num)
+```
+
+## Correlation Plot
+
+```{r corplot,echo=FALSE}
+ggcorrplot(cor(df_num),
+method = "circle",
+hc.order = TRUE,
+type = "lower")
+```
+
+
+
+# References 

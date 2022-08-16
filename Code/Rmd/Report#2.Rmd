@@ -3,7 +3,7 @@ title: 'Report #2'
 author: "GROUP 9"
 classoption: 12pt
 output: bookdown::pdf_document2
-bibliography: References.bib
+bibliography: ../../Reference/bib/References.bib
 link-citations: true
 biblio_style: "apalike"
 ---
