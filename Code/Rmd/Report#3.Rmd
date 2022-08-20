@@ -92,9 +92,6 @@ lapply(names(df), function(col) {
 grid.arrange(lp[[1]], lp[[2]], lp[[3]], ncol = 3)
 ```
 
-
-
-
 ### Numerical Summary
 Five numerical Variables:\
 Age - student's age (from 15 to 22)\
@@ -103,39 +100,222 @@ G1 - first period grade (from 0 to 20)\
 G2 - second period grade (from 0 to 20)\
 G3 - final grade (from 0 to 20, output target)\
 
-Means: \
+The table \@ref(tab:numsum) shows five numeric variable statistic summary includes: minimum, first quartile, median, third quartile, and maximum.\
+The table \@ref(tab:means) and table \@ref(tab:covariance) show five numeric variable means and covariance.
+
 ```{r NumSum, echo=FALSE}
 df_num = data.frame(student$age, student$absences, 
                     student$G1, student$G2, student$G3)
 names(df_num) <- c("age", "absences", "G1","G2","G3")
-colMeans(df_num)
+#summary(df_num)
 ```
 
-Covariance matrix:\
+\begin{table}[ht]
+\centering
+\caption {Summary of Five numerical Variables}
+\begin{tabular}{llllll}
+  \hline
+ & age & absences & G1 & G2 & G3 \\ 
+  \hline
+Min. & 15.0 & 0.0   & 3.0 & 0.0 &  0.0  \\
+1st Qu. & 16.0 & 0.0   & 8.0 & 9.0 &  8.0  \\ 
+Median & 17.0 & 4.0   & 11.0 & 11.0 &  11.0  \\
+3rd Qu. & 18.0 & 8.0   & 13.0 & 13.0 &  14.0  \\
+Max. & 22.0 & 75.0   & 19.0 & 19.0 &  20.0  \\
+   \hline
+\end{tabular} (\#tab:numsum)
+\end{table}
+
+```{r nummean,echo=FALSE}
+df_num.mean<-colMeans(df_num)
+```
+
+\begin{table}[ht]
+\centering
+\caption {Means of Five numerical Variables}
+\begin{tabular}{lllll}
+  \hline
+ age & absences & G1 & G2 & G3 \\ 
+  \hline
+16.696   & 5.709   & 10.909 & 10.714 &  10.415  \\ 
+   \hline
+\end{tabular} (\#tab:means)
+\end{table}
+
 ```{r covmat,echo=FALSE}
-cov(df_num)
+#cov(df_num)
 ```
 
-Correlation Matrix:\
+\begin{table}[ht]
+\centering
+\caption {Covariance of Five numerical Variables}
+\begin{tabular}{llllll}
+  \hline
+ & age & absences & G1 & G2 & G3 \\ 
+  \hline
+age & 1.628   & 1.790   & -0.271 & -0.689 &  -0.945  \\
+absences & 1.790   & 64.050   & -0.824 & -0.957 &  1.256  \\ 
+G1 & -0.271   & -0.824   & 11.017 & 10.639 &  12.188  \\
+G2 & -0.689   & -0.957   & 10.639 & 14.149 &  15.594  \\
+G3 & -0.945   & 1.256   & 12.188 & 15.594 &  20.990  \\
+   \hline
+\end{tabular} (\#tab:covariance)
+\end{table}
+
+\newpage
+Figure \@ref(fig:numplt) shows the count of five numerical variables. Red dashed line as mean and a fitted density in purple.
+
+```{r numplt,fig.height=4, fig.cap="Barplot for Numerical Variables", fig.pos="center", echo=FALSE, warning=FALSE}
+lp2 <- list()
+
+lp2[[1]] <- ggplot(data.frame(df_num$age), aes(x=df_num$age)) +
+  geom_histogram(aes(y=..density..),
+                 bins=nclass.FD(df_num$age),
+                 col="black", fill="white") +
+  geom_vline(xintercept = df_num.mean[1], col="red",linetype="dashed")+
+  geom_density(kernel="epanechnikov", size=.3, col="purple", alpha=.1) +
+  xlab("Age") +
+  ylab("Count") +
+  theme(text=element_text(size=12, 
+        family="serif"))
+
+lp2[[2]] <- ggplot(data.frame(df_num$absences), aes(x=df_num$absences)) +
+  geom_histogram(aes(y=..density..),
+                 bins=nclass.FD(df_num$absences),
+                 col="black", fill="white") +
+  geom_vline(xintercept = df_num.mean[2], col="red",linetype="dashed")+
+  geom_density(kernel="epanechnikov", size=.3, col="purple", alpha=.1) +
+  xlab("Absences") +
+  ylab("Count") +
+  theme(text=element_text(size=12, 
+        family="serif"))
+
+lp2[[3]] <- ggplot(data.frame(df_num$G1), aes(x=df_num$G1)) +
+  geom_histogram(aes(y=..density..),
+                 bins=nclass.FD(df_num$G1),
+                 col="black", fill="white") +
+  geom_vline(xintercept = df_num.mean[3], col="red",linetype="dashed")+
+  geom_density(kernel="epanechnikov", size=.3, col="purple", alpha=.1) +
+  xlab("G1") +
+  ylab("Count") +
+  theme(text=element_text(size=12, 
+        family="serif"))
+
+lp2[[4]] <- ggplot(data.frame(df_num$G2), aes(x=df_num$G3)) +
+  geom_histogram(aes(y=..density..),
+                 bins=nclass.FD(df_num$G3),
+                 col="black", fill="white") +
+  geom_vline(xintercept = df_num.mean[4], col="red",linetype="dashed")+
+  geom_density(kernel="epanechnikov", size=.3, col="purple", alpha=.1) +
+  xlab("G2") +
+  ylab("Count") +
+  theme(text=element_text(size=12, 
+        family="serif"))
+
+lp2[[5]] <- ggplot(data.frame(df_num$G3), aes(x=df_num$G3)) +
+  geom_histogram(aes(y=..density..),
+                 bins=nclass.FD(df_num$G3),
+                 col="black", fill="white") +
+  geom_vline(xintercept = df_num.mean[5], col="red",linetype="dashed")+
+  geom_density(kernel="epanechnikov", size=.3, col="purple", alpha=.1) +
+  xlab("G3") +
+  ylab("Count") +
+  theme(text=element_text(size=12, 
+        family="serif"))
+
+grid.arrange(lp2[[1]], lp2[[2]], lp2[[3]],lp2[[4]],lp2[[5]],nrow = 2,ncol = 3)
+```
+
+## Skewness and kurtosis
+
+Skewness is a statistical numerical method to measure the asymmetry of the distribution or data set.\
+Kurtosis is a numerical method in statistics that measures the sharpness of the peak in the data distribution.\
+
+### Skewness
+Table \@ref(tab:skew) shows skewness of five numerical variables.\
+Age, absences, and G1 have positive skewness, the graph is said to be positively skewed with the majority of data values less than mean, most of the values are concentrated on the left side.\
+Absences skewness is the biggest among all five values, the graph is more concentrated on the left side than age and G1.\
+G1 skewness is closest to $0$, the graph is said likely to be symmetric.\
+G2 and G3 have negative skewness, the graph is said to be negatively skewed with the majority of data values greater than mean,  most of the values are concentrated on the right side of the graph.\
+G3 has a smaller skewness so the graph is more concentrated on the right side than G2.\
+
+```{r skew,echo=FALSE}
+#skewness(df_num)
+```
+
+\begin{table}[ht]
+\centering
+\caption {Skewness of Five numerical Variables}
+\begin{tabular}{lllll}
+  \hline
+ age & absences & G1 & G2 & G3 \\ 
+  \hline
+0.464   & 3.658   & 0.240 & -0.430 &  -0.730  \\ 
+   \hline
+\end{tabular} (\#tab:skew)
+\end{table}
+
+### Kurtosis
+
+Table \@ref(tab:kurt) shows kurtosis of five numerical variables.\
+All five values are positive, value of G1 is smaller than $3$, then the data distribution is platykurtic.\
+Age is approximately close to $3$, then the data distribtuion is mesokurtic.\
+Absences has the biggest kurtosis value, it is much bigger than $3$, then the data distribution is leptokurtic and shows a sharp peak on the graph.\
+G2 and G3 are slightly bigger than $3$, then the data distribution is leptokurtic, but the sharp peak on the graph is not so obvious.\
+
+```{r kurt,echo=FALSE}
+#kurtosis(df_num)
+```
+
+\begin{table}[ht]
+\centering
+\caption {Kurtosis of Five numerical Variables}
+\begin{tabular}{lllll}
+  \hline
+ age & absences & G1 & G2 & G3 \\ 
+  \hline
+2.984   & 24.430   & 2.300 & 3.605 &  3.383  \\ 
+   \hline
+\end{tabular} (\#tab:kurt)
+\end{table}
+
+### Visualisation
+
+For both skewness and kurtosis, Figure \@ref(fig:numplt) shows the distribution of five numerical variables, and the sharpness of the peak.
+
+## Correlation Matrix and plot
+
+Table \@ref(tab:correlation) and Figure \@ref(fig:corplt) shows the correlation between all five numerical variables.\
+From the table and figure we get that G1, G2 and G3 are have a strong positive correlation.\
+Between G2 and G3 have the strongest positive correlation, which is 0.905.\
+Between age and G1, G2, G3, they have a low negative correlation.\
+
 ```{r cormat,echo=FALSE}
-cor(df_num)
+#cor(df_num)
 ```
 
-Skewness and kurtosis:\
-```{r skekur,echo=FALSE}
-skewness(df_num)
-kurtosis(df_num)
-```
+\begin{table}[ht]
+\centering
+\caption {Correlation Matrix of Five numerical Variables}
+\begin{tabular}{llllll}
+  \hline
+ & age & absences & G1 & G2 & G3 \\ 
+  \hline
+age & 1.000   & 0.175   & -0.064 & -0.143 &  -0.162  \\
+absences & 0.175   & 1.000   & -0.031 & -0.032 &  0.034  \\ 
+G1 & -0.064   & -0.031   & 1.000 & 0.852 &  0.801  \\
+G2 & -0.143   & -0.032   & 0.852 & 1.000 &  0.905  \\
+G3 & -0.162   & 0.034   & 0.801 & 0.905 &  1.000  \\
+   \hline
+\end{tabular} (\#tab:correlation)
+\end{table}
 
-## Correlation Plot
-
-```{r corplot,echo=FALSE}
+```{r corplt,fig.height=4, fig.cap="Correlation between five Numerical Variables", fig.pos="center", echo=FALSE, warning=FALSE}
 ggcorrplot(cor(df_num),
 method = "circle",
 hc.order = TRUE,
 type = "lower")
 ```
-
 
 ## Box Plot
 
@@ -172,11 +352,5 @@ grid.arrange(lp[[1]], lp[[2]], lp[[3]],
              lp3[[1]], lp3[[2]], lp3[[3]],ncol = 3)
 ```
 
-\
-\
-\
-\
-\
-
-
+\newpage
 # References 
