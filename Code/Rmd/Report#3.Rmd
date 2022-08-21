@@ -18,6 +18,7 @@ require(bookdown)
 require(xtable)
 require(moments)
 require(gridExtra)
+require(GGally)
 ```
 
 # EDA
@@ -359,6 +360,13 @@ for (i in 1:length(names(df))){
 grid.arrange(lp[[1]], lp[[2]], lp[[3]],
              lp2[[1]], lp2[[2]], lp2[[3]],
              lp3[[1]], lp3[[2]], lp3[[3]],ncol = 3)
+```
+
+## Pairs Plot
+Here is the pairs plot on the numeric variables using ggpairs.
+
+```{r pairsplot, echo=FALSE}
+ggpairs(df_num)
 ```
 
 \newpage
