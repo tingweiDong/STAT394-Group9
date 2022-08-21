@@ -24,24 +24,30 @@ require(gridExtra)
 
 ## Read Data
 
-The dataset have 395 records in total with 5 numerical variables and 28 categorical variables. The numerical variables include age, number of school absences, 1st Period grade, 2nd period grade and final period grade. The categorical variables include sex, address(urban/rural), parents highest qualification, family size, commuting time, study time and so on. The table below shows the first 5 records with 10 variables.
+The dataset have 395 records in total with 5 numerical variables and 28 categorical variables. The numerical variables include age, number of school absences, 1st Period grade, 2nd period grade and final period grade. Since we have too many categorical variables, for our data analysis, we will only include school, sex and number of past failures. The table below shows the first 5 records.
 
 ```{r, echo=FALSE}
 student=read.table("../../Data/CSV/student-mat.csv",sep=";",header=TRUE)
+df = data.frame(student$school,student$sex,student$failures)
+names(df) = c("School", "Sex", "Failures")
+df_num = data.frame(student$age, student$absences, 
+                    student$G1, student$G2, student$G3)
+names(df_num) <- c("age", "absences", "G1","G2","G3")
+#xtable(head(cbind(df, df_num)))
 ```
 
 \begin{table}[ht]
 \centering
-\begin{tabular}{rllrlllrrll}
+\begin{tabular}{rllrrrrrr}
   \hline
- & school & sex & age & address & famsize & Pstatus & Medu & Fedu & Mjob & Fjob \\ 
+ & School & Sex & Failures & age & absences & G1 & G2 & G3 \\ 
   \hline
-1 & GP & F &  18 & U & GT3 & A &   4 &   4 & at\_home & teacher \\ 
-  2 & GP & F &  17 & U & GT3 & T &   1 &   1 & at\_home & other \\ 
-  3 & GP & F &  15 & U & LE3 & T &   1 &   1 & at\_home & other \\ 
-  4 & GP & F &  15 & U & GT3 & T &   4 &   2 & health & services \\ 
-  5 & GP & F &  16 & U & GT3 & T &   3 &   3 & other & other \\ 
-  6 & GP & M &  16 & U & LE3 & T &   4 &   3 & services & other \\ 
+1 & GP & F &   0 &  18 &   6 &   5 &   6 &   6 \\ 
+  2 & GP & F &   0 &  17 &   4 &   5 &   5 &   6 \\ 
+  3 & GP & F &   3 &  15 &  10 &   7 &   8 &  10 \\ 
+  4 & GP & F &   0 &  15 &   2 &  15 &  14 &  15 \\ 
+  5 & GP & F &   0 &  16 &   4 &   6 &  10 &  10 \\ 
+  6 & GP & M &   0 &  16 &  10 &  15 &  15 &  15 \\ 
    \hline
 \end{tabular}
 \end{table}
