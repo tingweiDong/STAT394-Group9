@@ -25,7 +25,7 @@ require(GGally)
 
 ## Read Data
 
-The dataset have 395 records in total with 5 numerical variables and 28 categorical variables. There is no missing value in this dataset.\
+The dataset [@Dataset] have 395 records in total with 5 numerical variables and 28 categorical variables. There is no missing value in this dataset.\
 The numerical variables include age, number of school absences, 1st Period grade, 2nd period grade and final period grade.\
 Since we have too many categorical variables, for our data analysis, we will only include school, sex and number of past failures. The table below shows the first 5 records.\
 
