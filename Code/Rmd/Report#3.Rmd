@@ -364,7 +364,7 @@ grid.arrange(lp[[1]], lp[[2]], lp[[3]],
 
 ## Pairs Plot
 
-The Figure&nbsp;\@ref(fig:pairsplot) shows the pairs plot on the numeric variables using ggpairs. As similar to Table \@ref(tab:correlation) and Figure \@ref(fig:corplt), the pairs plot shows strong positive correaltions between G1, G2 and G3. Both age and absences have right skewed distributions.
+The Figure&nbsp;\@ref(fig:pairsplot) shows the pairs plot on the numeric variables using ggpairs. As similar to Table \@ref(tab:correlation) and Figure \@ref(fig:corplt), the pairs plot shows strong positive correlations between G1, G2 and G3. Both age and absences have right skewed distributions.
 
 ```{r pairsplot, fig.cap="Pairs plot on the numerical variables", echo=FALSE}
 ggpairs(df_num)
