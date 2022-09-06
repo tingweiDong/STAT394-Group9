@@ -1,0 +1,26 @@
+---
+title: 'Report #4'
+author: "GROUP 9"
+classoption: 12pt
+output: bookdown::pdf_document2
+bibliography: ../../Reference/bib/References.bib
+link-citations: true
+biblio_style: "apalike"
+---
+
+
+```{r, echo=FALSE}
+#df only contains categorical column
+student=read.table("../../Data/CSV/student-mat.csv",sep=";",header=TRUE)
+student$school <- as.factor(student$school)
+student$sex <- as.factor(student$sex)
+student$failures <- as.factor(student$failures)
+df = data.frame(student$school,student$sex,student$failures)
+names(df) = c("School", "Sex", "Failures")
+
+# df_num only contains numeric column
+df_num = data.frame(student$age, student$absences, student$G1, student$G2, student$G3)
+names(df_num) <- c("age", "absences", "G1","G2","G3")
+```
+
+# References 
