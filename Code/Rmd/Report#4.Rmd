@@ -250,4 +250,39 @@ pander(kruskal.test(G1 ~ Sex, data = df_all))
 
 \newpage
 
+# The Mahalanobis distance
+
+```{r distance, fig.cap="Mahalanobis distances Plot", echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
+mu.hat <- colMeans(df_num)
+Sigma.hat <- cov(df_num)
+
+dM <- mahalanobis(df_num, center=mu.hat, cov=Sigma.hat)
+upper.quantiles <- qchisq(c(.9, .95, .99), df=9)
+density.at.quantiles <- dchisq(x=upper.quantiles, df=9)
+cut.points <- data.frame(upper.quantiles, density.at.quantiles)
+ggplot(data.frame(dM), aes(x=dM)) +
+  geom_histogram(aes(y=..density..), bins=nclass.FD(dM),
+                 fill="white", col="black") +
+  geom_rug() +
+  stat_function(fun="dchisq", args = list(df=9),
+                col="red", size=2, alpha=.7, xlim=c(0,25)) +
+  geom_segment(data=cut.points,
+               aes(x=upper.quantiles, xend=upper.quantiles,
+                 y=rep(0,3), yend=density.at.quantiles),
+             col="blue", size=2) +
+xlab("Mahalanobis distances and cut points") +
+ylab("Histogram and density")
+```
+
+```{r dM, echo = FALSE}
+df_num$dM <- dM
+df_num$surprise <- cut(df_num$dM,
+                 breaks= c(0, upper.quantiles, Inf),
+                 labels=c("Typical", "Somewhat", "Surprising", "Very"))
+pander(table(df_num$surprise))
+```
+
+
+\newpage
+
 # References 
