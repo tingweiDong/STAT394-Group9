@@ -320,6 +320,14 @@ pander(table(df_num$surprise))
 ```
 Finally, we have identified the outliers as Very in the above table in our multivariate data. They total number of outliers look pretty similar as the points outside of the ellipse in the scatter plot.
 
+# Identify the distribution of interested variables
+We are motivated by this dataset since we are interested in what features affect overall math grades. We will mainly focus on exploring the distribution of the G3 variable, which is students' final grades. 
+
+```{r distributions, fig.cap="Cullen and Frey graph of G3 variables", echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
+descdist(df_num$G3, discrete = FALSE)
+```
+Looking at the results on the above graph, the data has a negative skewness and a kurtosis not far from 3, the fit of three common left-skewed distributions could be considered, Weibull, gamma and lognormal distributions.
+
 \newpage
 
 # References 
