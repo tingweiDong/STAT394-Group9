@@ -326,7 +326,18 @@ We are motivated by this dataset since we are interested in what features affect
 ```{r distributions, fig.cap="Cullen and Frey graph of G3 variables", echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 descdist(df_num$G3, discrete = FALSE)
 ```
-Looking at the results on the above graph, the data has a negative skewness and a kurtosis not far from 3, the fit of three common left-skewed distributions could be considered, Weibull, gamma and lognormal distributions.
+Looking at the results on the above graph, the data has a negative skewness and a kurtosis not far from 3, the fit of two common left-skewed distributions could be considered, Weibull and gamma distributions.
+
+```{r weibull, fig.cap="Fitting weibull distribution in G3 variable", echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
+weibull_dist <- fitdist(df_num$G3, "norm", method = "mge")
+plot(weibull_dist)
+```
+
+```{r gamma, fig.cap="Fitting gamma distribution in G3 variable", echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
+gmma_dist <- fitdist(df_num$G3, "gamma", method = "mge")
+plot(gmma_dist)
+```
+
 
 \newpage
 
