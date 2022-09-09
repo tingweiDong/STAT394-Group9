@@ -344,7 +344,7 @@ cdfcomp(list(weibull_dist, gamma_dist), legendtext = plot.legend)
 ppcomp(list(weibull_dist, gamma_dist), legendtext = plot.legend)
 ```
 
-None of the fitted distributions correctly describes the center of the distribution, but the Weibull distribution could be prefered for their better description of the right tail of the empirical distribution, especially if this tail is important in the use of the fitted distribution, as it is in the context of high grades in Maths.
+None of the fitted distributions correctly describes the center of the distribution, but the Weibull distribution could be prefered for their better description of the right tail of the empirical distribution, especially if this tail is important in the use of the fitted distribution, as it is in the context of high grades in Maths.[@distributions]
 
 \newpage
 
