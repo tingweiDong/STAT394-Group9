@@ -42,6 +42,7 @@ df_num = data.frame(student$age, student$absences, student$G1, student$G2, stude
 names(df_num) <- c("age", "absences", "G1","G2","G3")
 ```
 
+\newpage
 # Multivariate Normality Check on All Numerical Variables
 
 Let's start looking at the normality of numerical variables without splitting data. Figure&nbsp;\@ref(fig:qq) shows Quantile-Quantile plot of each numerical variables. For all of the plots, the points are off from the diagonal line, indicating non-normality. 
@@ -70,7 +71,6 @@ p5 <- ggplot(df_num, aes(sample=G3)) +
 grid.arrange(p1, p2, p3, p4, p5, nrow = 3,ncol = 2)
 ```
 
-
 ```{r mtest, echo=FALSE}
 #xtable(mult.norm(df_num)$mult.test)
 ```
@@ -88,6 +88,7 @@ Skewness & 29.74 & 1957.72 & 0.00 \\
 \end{tabular} (\#tab:mtest)
 \end{table}
 
+\newpage
 # Assumption checks to compare three test scores (G1, G2, and G3) by sex
 
 Figure&nbsp;\@ref(fig:box) shows the box plot of G1, G2 and G3 by sex. It seems that male student tend to score higher than female student. We want to find whether the score differ by sex. Figure&nbsp;\@ref(fig:den) shows the density plot of tests by sex. It seems variances do not differ much by sex but they might not have normal distribution. To conduct the multivariate analysis on means of vectors of students' test score(Hotelling's $T^2$ test), we will check equal variance and normality assumptions.  
@@ -312,7 +313,7 @@ figure
 
 ```
 
-Above is the plot of our data and an ellipse from considering center point and covariance matrix. Blue point on the plot shows the center point. Black points are the observations for G1 — G3 variables. As you can see, there are points outside the orange ellipse. It means that these points might be the outliers. If we consider that this ellipse has been drawn over covariance, center and radius, we can say we might have found the same points as the outlier for Mahalanobis Distance.
+Figure \@ref(fig:outliers) is the plot of our data and an ellipse from considering center point and covariance matrix. Blue point on the plot shows the center point. Black points are the observations for G1 — G3 variables. As you can see, there are points outside the orange ellipse. It means that these points might be the outliers. If we consider that this ellipse has been drawn over covariance, center and radius, we can say we might have found the same points as the outlier for Mahalanobis Distance.
 
 ```{r dM, echo = FALSE}
 df_num$dM <- dM
@@ -331,11 +332,12 @@ We are motivated by this dataset since we are interested in what features affect
 ```{r distributions, fig.cap="Cullen and Frey graph of G3 variables", echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 descdist(df_num$G3, discrete = FALSE)
 ```
-Looking at the results on the above graph, the data has a negative skewness and a kurtosis not far from 3, the fit of two common left-skewed distributions could be considered, Weibull and gamma distributions.
+
+Looking at the results in Figure \@ref(fig:distributions) and the R output, the data has a negative skewness and a kurtosis not far from 3, the fit of two common left-skewed distributions could be considered, Weibull and gamma distributions.
 
 \newpage
 
-```{r fit, fig.cap="Goodness-of-fit plots for Weibull and gamma distributions fitted to G3 variable)", echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
+```{r fit, fig.cap="Goodness-of-fit plots for Weibull and gamma distributions fitted to G3 variable", echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 weibull_dist <- fitdist(df_num$G3, "norm", method = "mge")
 gamma_dist <- fitdist(df_num$G3, "gamma", method = "mge")
 
@@ -347,7 +349,7 @@ cdfcomp(list(weibull_dist, gamma_dist), legendtext = plot.legend)
 ppcomp(list(weibull_dist, gamma_dist), legendtext = plot.legend)
 ```
 
-None of the fitted distributions correctly describes the center of the distribution, but the Weibull distribution could be prefered for their better description of the right tail of the empirical distribution, especially if this tail is important in the use of the fitted distribution, as it is in the context of high grades in Maths.[@distributions]
+In Figure \@ref(fig:fit), none of the fitted distributions correctly describes the center of the distribution, but the Weibull distribution could be prefered for their better description of the right tail of the empirical distribution, especially if this tail is important in the use of the fitted distribution, as it is in the context of high grades in Maths.[@distributions]
 
 \newpage
 
