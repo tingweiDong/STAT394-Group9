@@ -320,6 +320,8 @@ pander(table(df_num$surprise))
 ```
 Finally, we have identified the outliers as Very in the above table in our multivariate data. They total number of outliers look pretty similar as the points outside of the ellipse in the scatter plot.
 
+\newpage
+
 # Identify the distribution of interested variables
 We are motivated by this dataset since we are interested in what features affect overall math grades. We will mainly focus on exploring the distribution of the G3 variable, which is students' final grades. 
 
@@ -328,16 +330,21 @@ descdist(df_num$G3, discrete = FALSE)
 ```
 Looking at the results on the above graph, the data has a negative skewness and a kurtosis not far from 3, the fit of two common left-skewed distributions could be considered, Weibull and gamma distributions.
 
-```{r weibull, fig.cap="Fitting weibull distribution in G3 variable", echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
+\newpage
+
+```{r fit, fig.cap="Goodness-of-fit plots for Weibull and gamma distributions fitted to G3 variable)", echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 weibull_dist <- fitdist(df_num$G3, "norm", method = "mge")
-plot(weibull_dist)
+gamma_dist <- fitdist(df_num$G3, "gamma", method = "mge")
+
+par(mfrow = c(2, 2))
+plot.legend <- c("Weibull", "gamma")
+denscomp(list(weibull_dist, gamma_dist), legendtext = plot.legend)
+qqcomp(list(weibull_dist, gamma_dist), legendtext = plot.legend)
+cdfcomp(list(weibull_dist, gamma_dist), legendtext = plot.legend)
+ppcomp(list(weibull_dist, gamma_dist), legendtext = plot.legend)
 ```
 
-```{r gamma, fig.cap="Fitting gamma distribution in G3 variable", echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
-gmma_dist <- fitdist(df_num$G3, "gamma", method = "mge")
-plot(gmma_dist)
-```
-
+None of the fitted distributions correctly describes the center of the distribution, but the Weibull distribution could be prefered for their better description of the right tail of the empirical distribution, especially if this tail is important in the use of the fitted distribution, as it is in the context of high grades in Maths.
 
 \newpage
 
