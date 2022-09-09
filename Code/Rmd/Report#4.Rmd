@@ -24,6 +24,8 @@ require(stats)
 require(HDtest)
 require(pander)
 require(fitdistrplus)
+require(QuantPsyc)
+
 ```
 
 ```{r, echo=FALSE}
@@ -40,15 +42,13 @@ df_num = data.frame(student$age, student$absences, student$G1, student$G2, stude
 names(df_num) <- c("age", "absences", "G1","G2","G3")
 ```
 
-# Normality Check on Numerical Variables
+# Multivariate Normality Check on All Numerical Variables
 
-From previous EDA, we have found that some of the numerical variables might be normally distributed. We will closely look at the normality. Figure&nbsp;\@ref(fig:qq) shows Quantile-Quantile plot of each numerical variables. For all of the plots, the points are off from the diagonal line, indicating non-normality. 
+Let's start looking at the normality of numerical variables without splitting data. Figure&nbsp;\@ref(fig:qq) shows Quantile-Quantile plot of each numerical variables. For all of the plots, the points are off from the diagonal line, indicating non-normality. 
 
-The table \@ref(tab:test) shows the results of Shapiro Wilk test [@shapiro] for normality where they tested: $$H_0: X_i\ follows\ Normal\ distribution$$ $$H_0: X_i\ does\ not\ follow\ Normal\ distribution$$ $$where, \ i =\{Age, Absences, G1, G2, G3\}$$
+The table \@ref(tab:mtest) shows the results of Mardia’s Test [@mardia] for multivariate normality where they tested: $$H_0: X_i\ follows\ Normal\ distribution$$ $$H_0: X_i\ does\ not\ follow\ Normal\ distribution$$ $$where, \ i =\{Age, Absences, G1, G2, G3\}$$
 
-All of p-values are very small (when rounded at the 3 decimal points they are zeros) so, we have strong evidence against the null hypotheses that the variables are normally distributed.
-
-We can not apply log transformation to the variables since the variables contain zero value (e.g., some student scored zero at the test). Since the variables are not normally distributed and we can not apply log transformation, we need to find some analysis method that is robust to non-normality. 
+p-values were close to zero so, we have very strong evidence against the null hypothesis that the variables follow multivariate normal distribution. The results were expected since we did not split the data by factors. Next chapter will explore multivariate normal distribution of data by sex.
 
 ```{r qq, fig.cap="Quantile-Quantile Normality Plot", echo=FALSE, warning=FALSE, fig.height=8}
 p1 <- ggplot(df_num, aes(sample=age)) +
@@ -71,35 +71,22 @@ grid.arrange(p1, p2, p3, p4, p5, nrow = 3,ncol = 2)
 ```
 
 
-
-```{r, echo=FALSE}
-res <- apply(df_num, shapiro.test, MARGIN=2)
-result <- data.frame(c("age", "absences", "G1", "G2", "G3"), rbind(c(res$age$statistic, res$age$p.value),
-c(res$absences$statistic, res$absences$p.value),
-c(res$G1$statistic, res$G1$p.value),
-c(res$G2$statistic, res$G2$p.value),
-c(res$G3$statistic, res$G3$p.value)))
-
-names(result) <-  c("", "W test statistics", "P.value")
-#xtable(result)
+```{r mtest, echo=FALSE}
+#xtable(mult.norm(df_num)$mult.test)
 ```
 
 \begin{table}[ht]
-\caption {Shapiro Wilk Test Result}
+\caption {Maldia's Test}
 \centering
-\begin{tabular}{rlrr}
+\begin{tabular}{rrrr}
   \hline
- &  & W test statistics & P.value \\ 
+ & Beta-hat & kappa & p-val \\ 
   \hline
-1 & age & 0.91 & 0.000 \\ 
-  2 & absences & 0.67 & 0.000 \\ 
-  3 & G1 & 0.97 & 0.000 \\ 
-  4 & G2 & 0.97 & 0.000 \\ 
-  5 & G3 & 0.93 & 0.000 \\ 
+Skewness & 29.74 & 1957.72 & 0.00 \\ 
+  Kurtosis & 71.08 & 42.86 & 0.00 \\ 
    \hline
-\end{tabular} (\#tab:test)
+\end{tabular} (\#tab:mtest)
 \end{table}
-
 
 # Assumption checks to compare three test scores (G1, G2, and G3) by sex
 
@@ -138,12 +125,58 @@ grid.arrange(g1, g2, g3,ncol=1)
 
 \newpage
 
+
+## Test for multivariate normality
+
+We will conduct the hypotheses test to check multivariate normal distribution by using Mardia's test. The hypotheses are:
+
+$$H_0: X_{i}\ follows\ multivariate\ normal\ distribution$$ $$H_0: X_{i}\ does\ not\ follow\ multivariate\ normal\ distribution$$ $$where, \ i =\{Female, Male\}\ and\ X = (X_{G1}, X_{G2},X_{G3})$$
+The table \@ref(tab:mtestf) and \@ref(tab:mtestm) show the result of multivariate normal test. Since p-values are very small we have very strong evidence against the null hypothesis that the variables for each sex do not have multivariate normal distribution. Since the normality assumptions are violated we should not conduct Hotelling's $T^2$ test.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
+df_num_f <- df_num[df_all$Sex == "F", -c(1:2)]
+#xtable(mult.norm(df_num_f)$mult.test)
+```
+
+
+\begin{table}[ht]
+\caption {Maldia's Test for Female data}
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & Beta-hat & kappa & p-val \\ 
+  \hline
+Skewness & 13.47 & 466.82 & 0.00 \\ 
+  Kurtosis & 29.22 & 18.72 & 0.00 \\ 
+   \hline
+\end{tabular} (\#tab:mtestf)
+\end{table}
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
+df_num_m <- df_num[df_all$Sex == "M", -c(1:2)]
+#xtable(mult.norm(df_num_m)$mult.test)
+```
+
+\begin{table}[ht]
+\caption {Maldia's Test for Male data}
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & Beta-hat & kappa & p-val \\ 
+  \hline
+Skewness & 12.22 & 380.89 & 0.00 \\ 
+  Kurtosis & 30.69 & 19.58 & 0.00 \\ 
+   \hline
+\end{tabular} (\#tab:mtestm)
+\end{table}
+
 ## Test of equality of covariance matrices
 
-We will test equality of covariance matrices using the test discussed by [@covtest]. The hypotheses are:
+We will also test equality of covariance matrices using the test discussed by [@covtest]. The hypotheses are:
 
 $$H_0: \Sigma_{Female} = \Sigma_{Male}$$
 $$H_0: \Sigma_{Female} \neq \Sigma_{Male}$$
+
 The table \@ref(tab:covtest) shows the results from 4 tests about covariance matrix. They all returned high p-values indicating that we have very small evidence against the null hypothesis that the covariance matrices are equal. Therefore, we can assume equal covariance matrix.  
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE} 
@@ -174,79 +207,47 @@ names(df_cov) <- c("Tests", "Test Statistics", "P.values")
 \end{tabular} (\#tab:covtest)
 \end{table}
 
-## Test for normality of each distribution
 
-We will conduct the hypotheses test to check normality of each distributions by using Shapiro Wilk Test [@shapiro]. The hypotheses are:
+## Significance test on G3 scores by sex (Kruskal-Wallis test)
 
-$$H_0: X_{i,j}\ follows\ Normal\ distribution$$ $$H_0: X_{i,j}\ does\ not\ follow\ Normal\ distribution$$ $$where, \ i =\{Female, Male\}\ and\ j = \{G1, G2, G3\}$$
+Since we can not conduct Hotelling's $T^2$ test (because normality assumption was violated!) we will just test the significant difference in G3 scores by sex (we won't do the test for G1 and G2 because we want to control for family wise error). We used Kruskal Wallis test [@kruskal]:
 
-So, in total, we have conducted six hypothesis tests.
-
-The table \@ref(tab:normf) and the table \@ref(tab:normm) show the results of Shapiro Wilk test on each tests score(G1, G2, and G3) by sex respectively. Since all p-values are very small we have very strong evidence against that the variables have normal distribution, indicating the violation of normality assumptions. Since the normality assumptions are violated we should not conduct Hotelling's $T^2$ test. We need to find some alternative methods to find whether the tests score differ among sex.
-
-```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
-res <- apply(df_num[df_all$Sex == "F", ], shapiro.test, MARGIN=2)
-result.F <- data.frame(c("G1", "G2", "G3"),
-rbind(c(res$G1$statistic, res$G1$p.value),
-c(res$G2$statistic, res$G2$p.value),
-c(res$G3$statistic, res$G3$p.value)))
-
-names(result.F) <-  c("Female", "W test statistics", "P.value")
-#xtable(result.F)
-```
-
-\begin{table}[ht]
-\caption {Normality test on Female tests score}
-\centering
-\begin{tabular}{rlrr}
-  \hline
- & Female & W test statistics & P.value \\ 
-  \hline
-1 & G1 & 0.97 & 0.00 \\ 
-  2 & G2 & 0.97 & 0.00 \\ 
-  3 & G3 & 0.92 & 0.00 \\ 
-   \hline
-\end{tabular} (\#tab:normf)
-\end{table}
-
-```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
-res <- apply(df_num[df_all$Sex == "M", ], shapiro.test, MARGIN=2)
-result.M <- data.frame(c("G1", "G2", "G3"),
-rbind(c(res$G1$statistic, res$G1$p.value),
-c(res$G2$statistic, res$G2$p.value),
-c(res$G3$statistic, res$G3$p.value)))
-
-names(result.M) <-  c("Male", "W test statistics", "P.value")
-#xtable(result.M)
-```
-
-\begin{table}[ht]
-\caption {Normality test on Male tests score}
-\centering
-\begin{tabular}{rlrr}
-  \hline
- & Male & W test statistics & P.value \\ 
-  \hline
-1 & G1 & 0.98 & 0.01 \\ 
-  2 & G2 & 0.97 & 0.00 \\ 
-  3 & G3 & 0.93 & 0.00 \\ 
-   \hline
-\end{tabular} (\#tab:normm)
-\end{table}
-
-\newpage
-
-## Kruskal-Wallis test
-
-Since we can not conduct Hotelling's $T^2$ test we will just test the significant difference in G3 scores by sex (we won't do the test for G1 and G2 because we want to control for family wise error). We used Kruskal Wallis test [@kruskal]:
-
-$$H_0: Medians\ of\ G3\ test\ scores\ do\ not\ differ\ among\ sex$$
-$$H_1: Medians\ of\ G3\ test\ scores\ differ\ among\ sex$$
+$$H_0: Median\ of\ G3\ test\ scores\ do\ not\ differ\ among\ sex$$
+$$H_1: Median\ of\ G3\ test\ scores\ differ\ among\ sex$$
 Kruskal-Wallis test is nonparametric test so, it is robust to non-normality. The table 5 shows the result of Kruskal-Wallis test. Since p-value is around 0.05, we conclude that we have some evidence against the null hypothesis that the medians of G3 scores are same among sex. 
 
 ```{r kruskal, echo = FALSE}
 pander(kruskal.test(G1 ~ Sex, data = df_all))
 ```
+
+
+# More multivariate normal test by splitting data by Sex and Failures
+
+Since we could not detect multivariate normal distribution by sex. We will try to split data by Sex and whether the students have failed the other course (there are 4 datasets in total). The Mardia's test was conducted with the hypotheses that: 
+
+$$H_0: X_{i,j}\ follows\ multivariate\ normal\ distribution$$ $$H_0: X_{i,j}\ does\ not\ follow\ multivariate\ normal\ distribution$$ $$where, \ i =\{Female, Male\}\ ,\ j = \{Never\ failed,\ Have\ failed\} $$ $$and\ X = (X_{age}, X_{absence}, X_{G1}, X_{G2},X_{G3})$$
+
+The table 6,7,8 and 9 show the result of Mardia's test for each dataset. P-values are very small for all tests (except the Kurtosis of data of Male students and who have failed the other course). We are concluding that the numerical variables do not follow multivariate normal distribution even though we split data by sex and failures.
+
+```{r, echo=FALSE}
+df_all$fail <- ifelse(df_all$Failures != "0", 1, 0)
+
+f1 <- df_num[df_all$Sex == "F" & df_all$fail == 1,]
+m1 <- df_num[df_all$Sex == "M" & df_all$fail == 1,]
+f0 <- df_num[df_all$Sex == "F" & df_all$fail == 0,]
+m0 <- df_num[df_all$Sex == "M" & df_all$fail == 0,]
+
+set.caption("Female and has failed the other course")
+pander(mult.norm(f1)$mult.test)
+set.caption("Male and has failed the other course")
+pander(mult.norm(m1)$mult.test)
+set.caption("Female and has NEVER failed the other course")
+pander(mult.norm(f0)$mult.test)
+set.caption("Male and has NEVER failed the other course")
+pander(mult.norm(m0)$mult.test)
+```
+
+
 
 
 \newpage
@@ -279,6 +280,7 @@ ylab("Histogram and density")
 
 
 ## Multivariate Outlier Detection
+
 Mahalanobis Distance also gives reliable results when outliers are considered as multivariate.[@outliers] To find outliers, the distance between every point and centre in the multi-dimension data is calculated, and outliers are found by considering these distances.
 
 ```{r outliers, fig.cap="Scatter plot of G1 and G3 variables", echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
@@ -309,6 +311,7 @@ figure <- ggplot(df_num_compare , aes(x = G1 , y = G3)) +
 figure
 
 ```
+
 Above is the plot of our data and an ellipse from considering center point and covariance matrix. Blue point on the plot shows the center point. Black points are the observations for G1 — G3 variables. As you can see, there are points outside the orange ellipse. It means that these points might be the outliers. If we consider that this ellipse has been drawn over covariance, center and radius, we can say we might have found the same points as the outlier for Mahalanobis Distance.
 
 ```{r dM, echo = FALSE}
