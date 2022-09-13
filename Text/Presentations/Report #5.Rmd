@@ -30,31 +30,29 @@ names(df_num) <- c("age", "absences", "G1","G2","G3")
 
 
 ## Members {.smaller .columns-2}
-![](../../Images/JPG/Photo/Fugo Takefusa.jpg){width=75px}
+![](../../Images/JPG/Photo/Fugo%20Takefusa.jpg){width="75px"} 
 Fugo Takefusa\
-takefufugo@myvuw.ac.nz\
-0000-0001-7373-8389\
+[takefufugo\@myvuw.ac.nz](mailto:takefufugo@myvuw.ac.nz){.email}\
+ORCID: 0000-0001-7373-8389\
 
-![](../../Images/JPG/Photo/Rhys Lewis-Woodley.jpg){width=75px}
+![](../../Images/JPG/Photo/Rhys%20Lewis-Woodley.jpg){width="75px"} 
 Rhys Lewis-Woodley\
-lewisrhys@myvuw.ac.nz\
-0000-0001-5414-0832\
+[lewisrhys\@myvuw.ac.nz](mailto:lewisrhys@myvuw.ac.nz){.email}\
+ORCID: 0000-0001-5414-0832\
 
-![](){width=75px}
-Soumya Banerjee\
-banerjsoum@myvuw.ac.nz\
-0000-0001-5678-5095\
+![](){width="75px"} Soumya Banerjee\
+[banerjsoum\@myvuw.ac.nz](mailto:banerjsoum@myvuw.ac.nz){.email}\
+ORCID: 0000-0001-5678-5095\
 
-![](){width=75px}
+![](){width="75px"} 
 Vivian Dong\
-dongting@myvuw.ac.nz\
+[dongting\@myvuw.ac.nz](mailto:dongting@myvuw.ac.nz){.email}\
 0000-0001-8356-8598\
 
-![](../../Images/JPG/Photo/Yi Zhang.jpg){width=75px}
+![](../../Images/JPG/Photo/Yi%20Zhang.jpg){width="75px"} 
 Yi Zhang\
-zhangyi11@myvuw.ac.nz\
-0000-0003-2959-5290\
-
+[zhangyi11\@myvuw.ac.nz](mailto:zhangyi11@myvuw.ac.nz){.email}\
+ORCID: 0000-0003-2959-5290\
 ## Student Performance DataSet
 
 -   The data is about student academic grades for math course of two Portuguese secondary public school during the 2005/2006 school year.
@@ -151,33 +149,35 @@ grid.arrange(lp2[[1]], lp2[[2]], lp2[[3]],lp2[[4]],lp2[[5]],nrow = 2,ncol = 3)
 
 Female and has failed the other course
 
-|  | Beta-hat | kappa | p-val |
-| --- | --- | --- | --- |
-| Skewness | 15.87 | 105.8 | 4.901e-09 |
-| Kurtosis | 41.48 | 2.448 | 0.01437 |
+|  | $\hat{\beta}$ | $\kappa$ | p-val     |
+|----------|----------|-------|-----------|
+| Skewness | 15.87    | 105.8 | 4.901e-09  $
+| Kurtosis | 41.48    | 2.448 | 0.01437   |
 
 Male and has failed the other course
 
-|  | Beta-hat | kappa | p-val |
-| --- | --- | --- | --- |
-| Skewness | 10.48 | 75.14 | 9.406e-05 |
-| Kurtosis | 35.42 | 0.1643 | 0.8695 |
+| | $\hat{\beta}$ | $\kappa$  | p-val    |
+|----------|----------|--------|-----------|
+| Skewness | 10.48    | 75.14  | 9.406e-05 |
+| Kurtosis | 35.42    | 0.1643 | 0.8695    |
 
-<p class="forceBreak"></p>
+<p class="forceBreak">
+
+</p>
 
 Female and has NEVER failed the other course
 
-|  | Beta-hat | kappa | p-val |
-| --- | --- | --- | --- |
-| Skewness | 40.14 | 1124 | 0 |
-| Kurtosis | 76.29 | 31.98 | 0 |
+| | $\hat{\beta}$ | $\kappa$ | p-val |
+|----------|----------|-------|-------|
+| Skewness | 40.14    | 1124  | 0     |
+| Kurtosis | 76.29    | 31.98 | 0     |
 
 Male and has NEVER failed the other course
 
-|  | Beta-hat | kappa | p-val |
-| --- | --- | --- | --- |
-| Skewness | 24.02 | 576.5 | 0 |
-| Kurtosis | 66.68 | 22.72 | 0 |
+| | $\hat{\beta}$ | $\kappa$ | p-val |
+|----------|----------|-------|-------|
+| Skewness | 24.02    | 576.5 | 0     |
+| Kurtosis | 66.68    | 22.72 | 0     |
 
 ```{r, include=FALSE}
 df_all <- cbind(df, df_num) 
