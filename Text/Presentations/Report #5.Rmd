@@ -40,19 +40,21 @@ Rhys Lewis-Woodley\
 [lewisrhys\@myvuw.ac.nz](mailto:lewisrhys@myvuw.ac.nz){.email}\
 ORCID: 0000-0001-5414-0832\
 
-![](){width="75px"} Soumya Banerjee\
+![](../../Images/JPG/Photo/Soumya%20Banerjee.jpg){width="75px"} 
+Soumya Banerjee\
 [banerjsoum\@myvuw.ac.nz](mailto:banerjsoum@myvuw.ac.nz){.email}\
 ORCID: 0000-0001-5678-5095\
 
-![](){width="75px"} 
+![](../../Images/JPG/Photo/Vivian%20Dong.jpg){width="75px"} 
 Vivian Dong\
 [dongting\@myvuw.ac.nz](mailto:dongting@myvuw.ac.nz){.email}\
-0000-0001-8356-8598\
+ORCID: 0000-0001-8356-8598\
 
 ![](../../Images/JPG/Photo/Yi%20Zhang.jpg){width="75px"} 
 Yi Zhang\
 [zhangyi11\@myvuw.ac.nz](mailto:zhangyi11@myvuw.ac.nz){.email}\
 ORCID: 0000-0003-2959-5290\
+
 ## Student Performance DataSet
 
 -   The data is about student academic grades for math course of two Portuguese secondary public school during the 2005/2006 school year.
@@ -151,7 +153,7 @@ Female and has failed the other course
 
 |  | $\hat{\beta}$ | $\kappa$ | p-val     |
 |----------|----------|-------|-----------|
-| Skewness | 15.87    | 105.8 | 4.901e-09  $
+| Skewness | 15.87    | 105.8 | 4.901e-09 |
 | Kurtosis | 41.48    | 2.448 | 0.01437   |
 
 Male and has failed the other course
@@ -199,5 +201,8 @@ pander(mult.norm(m0)$mult.test)
 ```
 
 ## Future Analysis
+
+-   PCA 
+-   Classification. Using what we have in our dataset to predict if a student is going to fail or pass math course. G3 - final grade can be used as class label, since total mark is 20, we can label student below 10 as fail, above or equal to 10 as pass.
 
 # Thank you
