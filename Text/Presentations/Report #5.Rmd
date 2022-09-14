@@ -202,7 +202,7 @@ pander(mult.norm(m0)$mult.test)
 
 ## Future Analysis
 
--   PCA. Exploring our dataset we found that the first, second and third period grades (G1, G2, G3) show strong positive correlation with each other. This is our initial motivation for a future PCA analysis to understand these relationships in the dataset further.
+-   PCA. Exploring our dataset we found that the first period, second period and final grade (G1, G2, G3) show strong positive correlation with each other. This is our initial motivation for a future PCA analysis to understand these relationships in the dataset further.
 -   Classification. Using what we have in our dataset to predict if a student is going to fail or pass math course. G3 - final grade can be used as class label, since total mark is 20, we can label student below 10 as fail, above or equal to 10 as pass.
 
 # Thank you
