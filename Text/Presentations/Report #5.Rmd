@@ -2,7 +2,9 @@
 title: "Presentation Report"
 author: "Group 9"
 date: "2022-09-16"
-output: ioslides_presentation
+output: 
+  ioslides_presentation:
+    widescreen: true
 ---
 
 ```{r setup, include=FALSE}
@@ -30,27 +32,27 @@ names(df_num) <- c("age", "absences", "G1","G2","G3")
 
 
 ## Members {.smaller .columns-2}
-![](../../Images/JPG/Photo/Fugo%20Takefusa.jpg){width="75px"} 
+![](../../Images/JPG/Photo/Fugo%20Takefusa.jpg){width="100px"} 
 Fugo Takefusa\
 [takefufugo\@myvuw.ac.nz](mailto:takefufugo@myvuw.ac.nz){.email}\
 ORCID: 0000-0001-7373-8389\
 
-![](../../Images/JPG/Photo/Rhys%20Lewis-Woodley.jpg){width="75px"} 
+![](../../Images/JPG/Photo/Rhys%20Lewis-Woodley.jpg){width="100px"} 
 Rhys Lewis-Woodley\
 [lewisrhys\@myvuw.ac.nz](mailto:lewisrhys@myvuw.ac.nz){.email}\
 ORCID: 0000-0001-5414-0832\
 
-![](../../Images/JPG/Photo/Soumya%20Banerjee.jpg){width="75px"} 
+![](../../Images/JPG/Photo/Soumya%20Banerjee.jpg){width="100px"} 
 Soumya Banerjee\
 [banerjsoum\@myvuw.ac.nz](mailto:banerjsoum@myvuw.ac.nz){.email}\
 ORCID: 0000-0001-5678-5095\
 
-![](../../Images/JPG/Photo/Vivian%20Dong.jpg){width="75px"} 
+![](../../Images/JPG/Photo/Vivian%20Dong.jpg){width="100px"} 
 Vivian Dong\
 [dongting\@myvuw.ac.nz](mailto:dongting@myvuw.ac.nz){.email}\
 ORCID: 0000-0001-8356-8598\
 
-![](../../Images/JPG/Photo/Yi%20Zhang.jpg){width="75px"} 
+![](../../Images/JPG/Photo/Yi%20Zhang.jpg){width="100px"} 
 Yi Zhang\
 [zhangyi11\@myvuw.ac.nz](mailto:zhangyi11@myvuw.ac.nz){.email}\
 ORCID: 0000-0003-2959-5290\
@@ -143,7 +145,9 @@ grid.arrange(lp2[[1]], lp2[[2]], lp2[[3]],lp2[[4]],lp2[[5]],nrow = 2,ncol = 3)
 -   Mean: Age 17, Number of absences 6, G1 grade 11, G2 grade 11, G3 grade 10
 -   Variance: Age 1.63, Number of absences 64.05, G1 grade 11.02, G2 grade 14.15, G3 grade 20.99
 
-## Multivariate Normal Distribution by splitting data by Sex and Failures{.smaller .columns-2}
+## Multivariate Normal Distribution by splitting data by Sex and Failures{.smaller .columns-2 .flexbox .vcenter}
+
+<div class="columns-2">
 
 <style>
 .forceBreak { -webkit-column-break-after: always; break-after: column; }
@@ -164,7 +168,6 @@ Male and has failed the other course
 | Kurtosis | 35.42    | 0.1643 | 0.8695    |
 
 <p class="forceBreak">
-
 </p>
 
 Female and has NEVER failed the other course
@@ -180,6 +183,14 @@ Male and has NEVER failed the other course
 |----------|----------|-------|-------|
 | Skewness | 24.02    | 576.5 | 0     |
 | Kurtosis | 66.68    | 22.72 | 0     |
+
+</div>
+
+<div class="centered">
+-   For normal distribution, kurtosis value is approximately equal to 3, skewness is equal to 0 or approximately close to 0.
+</div>
+
+
 
 ```{r, include=FALSE}
 df_all <- cbind(df, df_num) 
