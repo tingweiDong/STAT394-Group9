@@ -1,0 +1,20 @@
+---
+title: "Final Presentation"
+author: "Group 9"
+date: "2022-09-16"
+output: 
+  ioslides_presentation:
+    widescreen: true
+---
+
+```{r read, include=FALSE}
+student=read.table("../../Data/CSV/student-mat.csv",sep=";",header=TRUE)
+df_num = data.frame(student$age, student$absences, 
+                    student$G1, student$G2, student$G3)
+student$school <- as.factor(student$school)
+student$sex <- as.factor(student$sex)
+student$failures <- as.factor(student$failures)
+df = data.frame(student$school,student$sex,student$failures)
+names(df) = c("School", "Sex", "Failures")
+names(df_num) <- c("age", "absences", "G1","G2","G3")
+```
