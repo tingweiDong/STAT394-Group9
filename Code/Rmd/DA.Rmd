@@ -1,0 +1,102 @@
+---
+title: "DA"
+author: "Yi Zhang"
+date: "2022-09-28"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(psych)
+require(MASS)
+require(ggplot2)
+require(ggord)
+require(klaR)
+```
+
+# LDA
+
+```{r echo = FALSE}
+student=read.table("../../Data/CSV/student-mat.csv",sep=";",header=TRUE)
+student$school <- as.factor(student$school)
+student$sex <- as.factor(student$sex)
+student$failures <- as.factor(student$failures)
+df = data.frame(student$school,student$sex,student$failures)
+names(df) = c("School", "Sex", "Failures")
+
+# df_num only contains numeric column
+df_num = data.frame(student$age, student$absences, student$G1, student$G2, student$G3)
+names(df_num) <- c("age", "absences", "G1","G2","G3")
+```
+
+## Add Label
+
+```{r}
+G3 <- df_num$G3
+df_label = c()
+for(i in 1:length(G3)){
+  if(G3[i]>=10){
+    df_label[i] <- "Pass"
+  }else {
+    df_label[i] <- "Fail"
+  }
+}
+df_label <- data.frame(df_label)
+df_num <- cbind(df_num,df_label)
+df_DA <- df_num[-c(5)]
+df_DA$df_label <- as.factor(df_DA$df_label)
+summary(df_DA)
+```
+
+## Pairs plot
+```{r}
+pairs.panels(df_DA[, -3],gap=0, bg=c("red", "green", "blue")[df_DA$df_label],
+pch=21)
+```
+
+## LDA Histogram
+```{r include=FALSE}
+ind <- sample(c("Train","Test"),
+              nrow(df_DA),replace = TRUE,prob = c(.7, .3))
+Train <- df_DA[ind=="Train",]
+Test <- df_DA[ind=="Test",]
+(LDA <- lda(df_label~age+absences+G1+G2,data=Train))
+```
+```{r}
+Pred <- predict(LDA)
+ldahist(data=Pred$x[,1],g=Train$df_label)
+```
+
+## Partition Plot
+```{r}
+partimat(df_label~., data=Train, method="lda",prec=300)
+```
+
+## Confusion matrix of Training data
+
+```{r}
+optPred <- predict(LDA, Train)$class
+(confusion_Train <- table(optPred, Actual=Train$df_label))
+```
+## Accuracy of training data
+
+```{r}
+sum(diag(confusion))/sum(confusion)
+```
+
+## Confusion matrix of test data
+
+```{r}
+realPred <- predict(LDA,Test)$class
+((confusion_Test <- table(realPred, Actual=Test$df_label)))
+```
+
+## Accuracy of test data
+
+```{r}
+sum(diag(confusion_Test))/sum(confusion_Test)
+```
+
+
+
+
