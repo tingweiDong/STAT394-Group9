@@ -7,6 +7,17 @@ output:
     widescreen: true
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+require(ggplot2)
+require(ggthemes)
+require(gridExtra)
+require(pander)
+require(xtable)
+require(bookdown)
+
+```
+
 ```{r read, include=FALSE}
 student=read.table("../../Data/CSV/student-mat.csv",sep=";",header=TRUE)
 df_num = data.frame(student$age, student$absences, 
@@ -18,3 +29,84 @@ df = data.frame(student$school,student$sex,student$failures)
 names(df) = c("School", "Sex", "Failures")
 names(df_num) <- c("age", "absences", "G1","G2","G3")
 ```
+
+
+## PCA
+
+We have conducted PCA on 4 numeric variables (G1, G2, Age, Number of Absences) to see if we can perform dimentionality reduction.
+
+<div class="columns-2">
+
+```{r scree, fig.cap="", echo=FALSE, warning=FALSE, out.width="99%"}
+PCA <- prcomp(df_num[, -5])
+var_explained = PCA$sdev^2 / sum(PCA$sdev^2)
+
+#create scree plot
+qplot(c(1:4), var_explained) + 
+  geom_line() + 
+  xlab("Principal Component") + 
+  ylab("Proportion of Variance Explained") +
+  ggtitle("Scree Plot for PCA in %") +
+  ylim(0, 1)
+```
+
+
+<style>
+.forceBreak { -webkit-column-break-after: always; break-after: column; }
+</style>
+
+|          | PC1      | PC2   |      PC3  | PC3|
+|-----------------------|--------|--------|--------|--------|
+|Standard deviation     | 8.0088 | 4.8287 | 1.4047 | 1.1888 |
+|Proportion of Variance | 0.7061 | 0.2567 | 0.0217 | 0.0156 |
+|Cumulative Proportion  | 0.7061 | 0.9627 | 0.9844 | 1.0000 |
+
+
+## Fit Linear Regression
+
+$$
+Full\ model:G3_i = \beta_0 + \beta_1G1_i + \beta_2G2_i + \beta_3Age_i + \beta_4Absence_i + \epsilon_i
+$$
+
+$$
+PC12\ model:G3_i = \beta_0 + \beta_1PC1_i + \beta_2PC2_i + \epsilon_i
+$$
+
+$$
+PC123\ model:G3_i = \beta_0 + \beta_1PC1_i + \beta_2PC2_i + \beta_3PC3_i + \epsilon_i
+$$
+
+## Diagnostics of Full Model
+
+```{r diag1, fig.cap="Diagnostic Plot for Full Model", echo=FALSE, warning=FALSE, fig.height=6}
+PCAdf <- data.frame(df_num$G3, PCA$x)
+modPCA12 <- lm(df_num.G3 ~ PC1 + PC2, data=PCAdf)
+modPCA123 <- lm(df_num.G3 ~ PC1 + PC2 + PC3, data=PCAdf)
+modNormal <- lm(G3 ~ ., data=df_num)
+
+par(mfrow=c(2,2))
+plot(modNormal)
+```
+
+## Diagnostics of PC12 Model
+
+```{r diag2, fig.cap="Diagnostic Plot for Model with PC1 and PC2", echo=FALSE, warning=FALSE, fig.height=6}
+par(mfrow=c(2,2))
+plot(modPCA12)
+```
+
+
+## Model Comparison
+
+Check AIC, BIC and Adjusted $R^2$
+ 
+|  | AIC | BIC | Adjusted $R^2$ |
+|------------|---------|---------|------|
+| Full Model | 1637.29 | 1661.16 | 0.83 | 
+| ModelPC12  | 1689.13 | 1705.05 | 0.80 | 
+| ModelPC123 | 1637.31 | 1657.20 | 0.83 | 
+
+
+- In contrast with what we have seen in the scree plot before, PC123 model is the 'best' model so far.
+
+- We can reduce the number of variables to 3 instead of using 4 variables to predict G3

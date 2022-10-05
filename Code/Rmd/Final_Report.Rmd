@@ -8,6 +8,18 @@ link-citations: true
 biblio_style: "apalike"
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+require(ggplot2)
+require(ggthemes)
+require(gridExtra)
+require(pander)
+require(xtable)
+require(bookdown)
+
+```
+
+
 ```{r, echo=FALSE}
 #df only contains categorical column
 student=read.table("../../Data/CSV/student-mat.csv",sep=";",header=TRUE)
@@ -21,3 +33,118 @@ names(df) = c("School", "Sex", "Failures")
 df_num = data.frame(student$age, student$absences, student$G1, student$G2, student$G3)
 names(df_num) <- c("age", "absences", "G1","G2","G3")
 ```
+
+
+# PCA
+
+## PCA Details
+
+We have conducted PCA on 4 numeric variables (G1, G2, Age, Number of Absences) to see if we can perform dimentionality reduction. 
+The table \@ref(tab:sumPCA) shows summary of PCA results with proportion of variances explained by each component and the cumulative proportion. The first and the second principle components explained 96% of total variance. Figure&nbsp;\@ref(fig:scree) shows the visualization of proportion of variance explained by each principle components. It seems two principle components are enough to explain most of the variance.
+
+
+```{r scree, fig.cap="Scree Plot of PCA in %", echo=FALSE, warning=FALSE, fig.height=6}
+PCA <- prcomp(df_num[, -5])
+var_explained = PCA$sdev^2 / sum(PCA$sdev^2)
+
+#create scree plot
+qplot(c(1:4), var_explained) + 
+  geom_line() + 
+  xlab("Principal Component") + 
+  ylab("Proportion of Variance Explained") +
+  ggtitle("Scree Plot for PCA") +
+  ylim(0, 1)
+```
+
+
+\begin{table}[ht]
+\caption {Summary of PCA}
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & PC1 & PC2 & PC3 & PC4 \\ 
+  \hline
+Standard deviation & 8.0088 & 4.8287 & 1.4047 & 1.1888 \\ 
+  Proportion of Variance & 0.7061 & 0.2567 & 0.0217 & 0.0156 \\ 
+  Cumulative Proportion & 0.7061 & 0.9627 & 0.9844 & 1.0000 \\ 
+   \hline
+\end{tabular} (\#tab:sumPCA)
+\end{table}
+
+\newpage
+
+## Fit Linear Regression
+
+We fitted three Linear Regression models. A model which has all numerical predictors in the model, a model that contains the first and second principal components and a last model includes the first, second and third principal components. The model equations are:  
+
+$$
+Full\ model:G3_i = \beta_0 + \beta_1G1_i + \beta_2G2_i + \beta_3Age_i + \beta_4Absence_i + \epsilon_i
+$$
+
+$$
+PC12\ model:G3_i = \beta_0 + \beta_1PC1_i + \beta_2PC2_i + \epsilon_i
+$$
+
+$$
+PC123\ model:G3_i = \beta_0 + \beta_1PC1_i + \beta_2PC2_i + \beta_3PC3_i + \epsilon_i
+$$
+
+
+Figure&nbsp;\@ref(fig:diag1), &nbsp;\@ref(fig:diag2) and &nbsp;\@ref(fig:diag3) show the diagnostic plots of each model. It seems all models show violation of Normality and errors have some patterns. PCA could not fix the violation assumptions.
+
+```{r diag1, fig.cap="Diagnostic Plot for Full Model", echo=FALSE, warning=FALSE, fig.height=6}
+PCAdf <- data.frame(df_num$G3, PCA$x)
+modPCA12 <- lm(df_num.G3 ~ PC1 + PC2, data=PCAdf)
+modPCA123 <- lm(df_num.G3 ~ PC1 + PC2 + PC3, data=PCAdf)
+modNormal <- lm(G3 ~ ., data=df_num)
+
+par(mfrow=c(2,2))
+plot(modNormal)
+```
+
+```{r diag2, fig.cap="Diagnostic Plot for Model with PC1 and PC2", echo=FALSE, warning=FALSE, fig.height=6}
+par(mfrow=c(2,2))
+plot(modPCA12)
+```
+
+```{r diag3, fig.cap="Diagnostic Plot for Model with PC1, PC2 and PC3", echo=FALSE, warning=FALSE, fig.height=6}
+par(mfrow=c(2,2))
+plot(modPCA123)
+```
+
+\newpage
+
+## Check AIC, BIC and Adjusted $R^2$
+
+We have checked the model fit by AIC, BIC and Adjusted $R^2$. The table  \@ref(tab:IC) shows the results. In contrast with what we have seen in Figure&nbsp;\@ref(fig:scree) scree plot before, the model with the first and second principle components have the highest AIC, BIC and lowest Adjusted $R^2$ value. AIC from full model and AIC from the model with three principle components do not differ much. Model with three principle components have the lowest BIC. Thus, PC123 model is the 'best' model so far. We can conclude that by using PCA, we can reduce the number of variables to 3 instead of using 4 variables to predict G3.
+
+```{r, echo=FALSE, include=FALSE}
+
+tab <- data.frame(AIC(modNormal, modPCA12,modPCA123)[,2],
+BIC(modNormal, modPCA12,modPCA123)[,2],
+c(summary(modNormal)$adj,
+  summary(modPCA12)$adj,
+  summary(modPCA123)$adj))
+rownames(tab) <- c("Full Model", "ModelPC12", "ModelPC123")
+colnames(tab) <- c("AIC", "BIC", "Adjusted R^2")
+#xtable(tab)
+```
+
+\begin{table}[ht]
+\caption {Information Criterion}
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & AIC & BIC & Adjusted $R^2$ \\ 
+  \hline
+Full Model & 1637.29 & 1661.16 & 0.83 \\ 
+  ModelPC12 & 1689.13 & 1705.05 & 0.80 \\ 
+  ModelPC123 & 1637.31 & 1657.20 & 0.83 \\ 
+   \hline
+\end{tabular}  (\#tab:IC)
+\end{table}
+
+
+
+
+
