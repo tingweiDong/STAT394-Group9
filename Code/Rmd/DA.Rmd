@@ -1,8 +1,9 @@
 ---
 title: "DA"
-author: "Yi Zhang"
+author: "Group 9"
 date: "2022-09-28"
-output: pdf_document
+classoption: 12pt
+output: bookdown::pdf_document2
 ---
 
 ```{r setup, include=FALSE}
@@ -12,11 +13,12 @@ require(MASS)
 require(ggplot2)
 require(ggord)
 require(klaR)
+require(pander)
+require(bookdown)
 ```
 
-# LDA
-
-```{r echo = FALSE}
+```{r, echo = FALSE}
+#Read data
 student=read.table("../../Data/CSV/student-mat.csv",sep=";",header=TRUE)
 student$school <- as.factor(student$school)
 student$sex <- as.factor(student$sex)
@@ -29,73 +31,185 @@ df_num = data.frame(student$age, student$absences, student$G1, student$G2, stude
 names(df_num) <- c("age", "absences", "G1","G2","G3")
 ```
 
-## Add Label
+# Linear Discriminant Analysis - LDA
 
-```{r}
+After EDA and PCA, we are familiar with our dataset, and we want to actually use this dataset to predict whether a student will Fail or Pass the math course, if we have all the information except the final grade G3 of this student.\
+From our previous analyse in EDA, there might have a way to define G3 by a linear combination of the input variables. Therefore, LDA will be applied.\
+
+## Define Label
+
+Since G3 will be the class label, and the full mark of G3 is $20$, therefore, grades that below $10$ will be labelled as Fail, and equal or above $10$ will be Pass.\
+The table shows the total students in each labels, there are 265 students pass the course, and 130 students who failed.\
+
+```{r, echo=FALSE}
 G3 <- df_num$G3
-df_label = c()
+Label = c()
 for(i in 1:length(G3)){
   if(G3[i]>=10){
-    df_label[i] <- "Pass"
+    Label[i] <- "Pass"
   }else {
-    df_label[i] <- "Fail"
+    Label[i] <- "Fail"
   }
 }
-df_label <- data.frame(df_label)
-df_num <- cbind(df_num,df_label)
+Label <- data.frame(Label)
+df_num <- cbind(df_num,Label)
 df_DA <- df_num[-c(5)]
-df_DA$df_label <- as.factor(df_DA$df_label)
-summary(df_DA)
+df_DA$Label <- as.factor(df_DA$Label)
+pander(table(df_DA$Label))
 ```
 
-## Pairs plot
-```{r}
-pairs.panels(df_DA[, -3],gap=0, bg=c("red", "green", "blue")[df_DA$df_label],
+## LDA Underlying hypotheses
+
+There are two main hypotheses that need to check before any further analyse.\
+- The classes are linearly separable.\
+- The covariance matrices are not too different.\
+
+### Pairs plot
+
+Figure \@ref(fig:ldaPairs) shows the pairs plot of 4 numerical varialbes with two class labels. The red dots are Fail, and the green dots are Pass. From this plot, we can see the two classes are kind of linearly separable.\
+
+```{r ldaPairs, fig.cap="Pairs plot of 4 numerical variables with two class label colors", echo=FALSE}
+pairs.panels(df_DA[, -5],gap=0, bg=c("red", "green")[df_DA$Label],
 pch=21)
 ```
 
+### Covariance matrix
+
+Table \@ref(tab:covfail) and table \@ref(tab:covpass) are the covariance matrices of two groups.\
+From two tables, there are not much different between two groups.\
+
+```{r, echo=FALSE}
+df_split<-split(df_DA,df_DA$Label)
+#cov(df_split$Fail[,-5])
+#cov(df_split$Pass[,-5])
+```
+
+\begin{table}[ht]
+\centering
+\caption {Covariance Matrix of Fail Group}
+\begin{tabular}{lllll}
+  \hline
+ & age & absences & G1 & G2 \\ 
+  \hline
+age      & 1.91  & 1.61   & -0.14 & 0.35 \\
+absences & 1.61  & 109.76 & 2.41  & 6.41 \\ 
+G1       & -0.14 & 2.41   & 2.90  & 1.70 \\
+G2       & 0.35  & 6.41   & 1.70  & 7.36 \\
+   \hline
+\end{tabular}(\#tab:covfail)
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption {Covariance Matrix of Pass Group}
+\begin{tabular}{lllll}
+  \hline
+ & age & absences & G1 & G2 \\ 
+  \hline
+age      & 1.42  & 1.63   & 0.42 & -0.27 \\
+absences & 1.63  & 41.14  & 0.03 & -1.55 \\ 
+G1       & 0.412 & 0.03   & 7.76 & 6.06 \\
+G2       & -0.27 & -1.55  & 6.06 & 6.41 \\
+   \hline
+\end{tabular}(\#tab:covpass)
+\end{table}
+
+### Conclusion
+
+From two results above, this dataset fit the two underlying hypotheses, LDA will work well with this dataset.\
+
 ## LDA Histogram
+
+We split the dataset into training data and test data, we use $70\%$ of the original dataset as training data, and $30\%$ as test data.\
+We first want to train LDA with the training dataset.\
+Table \@ref(tab:ldaprob) shows there are $33.6\%$ students in training data are Fail, and $66.4\%$ are Pass. This result is kind of what we expected, since we have $130$ Fail and $265$ Pass.\
+
 ```{r include=FALSE}
 ind <- sample(c("Train","Test"),
               nrow(df_DA),replace = TRUE,prob = c(.7, .3))
 Train <- df_DA[ind=="Train",]
 Test <- df_DA[ind=="Test",]
-(LDA <- lda(df_label~age+absences+G1+G2,data=Train))
+LDA <- lda(Label~age+absences+G1+G2,data=Train)
 ```
-```{r}
+
+\begin{table}[ht]
+\centering
+\caption {Prior probabilities of groups}
+\begin{tabular}{ll}
+  \hline
+Fail & Pass \\ 
+  \hline
+0.336 & 0.664 \\
+   \hline
+\end{tabular}(\#tab:ldaprob)
+\end{table}
+
+\newpage
+Figure \@ref(fig:ldahist) shows the LDA histogram of Fail and Pass. This plot shows that some of the observations are mixed together in the middle part that not easy to separate into two groups, and rest of the observations can be splited into two groups clearly.\
+
+```{r ldahist, fig.cap="LDA histogram of two groups",echo=FALSE}
 Pred <- predict(LDA)
-ldahist(data=Pred$x[,1],g=Train$df_label)
+ldahist(data=Pred$x[,1],g=Train$Label)
 ```
 
+\newpage
 ## Partition Plot
-```{r}
-partimat(df_label~., data=Train, method="lda",prec=300)
+
+Figure \@ref(fig:ldapart) is the partition plot. In general, we have a really nice result with small error rate.\
+The smallest error rate is $0.077$ which is the plot of G1 and G2, this result is what we expected, since G1 and G2 have the highest correlation with G3. In the pairs plot above, this also shows that this plot may give us the best result.\
+
+```{r ldapart, fig.cap="Partition plot of training data", echo=FALSE}
+partimat(Label~., data=Train, method="lda",prec=300)
 ```
 
-## Confusion matrix of Training data
+\newpage
+## Confusion matrix
 
-```{r}
+Table \@ref(tab:trainmat) and table \@ref(tab:testmat) are the confusion matrices. From the the matrices, training data has an accuracy of $0.91$ and test data has accuracy of $0.85$, both give us a nice result.\
+However, the total students in two groups are not equal, therefore, we need to check Recall and Precision as well.\
+In training data, we have precision $0.86$ and recall $0.89$, and in test data we have precision $0.65$ and recall $0.84$. The result here in training data gives a good result, but in test data we have a poor precision result.\
+In general, LDA gives a quite nice model, and the dataset can fit LDA well.\
+
+
+```{r, include=FALSE}
 optPred <- predict(LDA, Train)$class
-(confusion_Train <- table(optPred, Actual=Train$df_label))
-```
-## Accuracy of training data
-
-```{r}
-sum(diag(confusion))/sum(confusion)
-```
-
-## Confusion matrix of test data
-
-```{r}
+confusion_Train <- table(optPred, Actual=Train$Label)
 realPred <- predict(LDA,Test)$class
-((confusion_Test <- table(realPred, Actual=Test$df_label)))
-```
-
-## Accuracy of test data
-
-```{r}
+confusion_Test <- table(realPred, Actual=Test$Label)
+sum(diag(confusion_Train))/sum(confusion_Train)
 sum(diag(confusion_Test))/sum(confusion_Test)
+confusion_Train[1]/(confusion_Train[1]+confusion_Train[3])
+confusion_Train[1]/(confusion_Train[1]+confusion_Train[2])
+confusion_Test[1]/(confusion_Test[1]+confusion_Test[3])
+confusion_Test[1]/(confusion_Test[1]+confusion_Test[2])
 ```
+
+\begin{table}[ht]
+\centering
+\caption {Confusion matrix of training data}
+\begin{tabular}{lll}
+  \hline
+& Fail & Pass \\ 
+  \hline
+Fail & 88 & 14 \\
+Pass & 11 & 158 \\
+   \hline
+\end{tabular}(\#tab:trainmat)
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption {Confusion matrix of test data}
+\begin{tabular}{lll}
+  \hline
+& Fail & Pass \\ 
+  \hline
+Fail & 26 & 14 \\
+Pass & 5 & 79 \\
+   \hline
+\end{tabular}(\#tab:testmat)
+\end{table}
+
 
 
 
