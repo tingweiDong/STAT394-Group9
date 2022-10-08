@@ -210,7 +210,13 @@ Pass & 5 & 79 \\
 \end{tabular}(\#tab:testmat)
 \end{table}
 
+\newpage
+## LDA Conclusion
 
+The LDA result we get here is quite nice, and follows what we expected in the plots and the tables.\
+Except LDA, we also fit naive Bayes model to see if it gives us a better model, but the result is worse than LDA, and we do not show the results here.\
+We only fit LDA model with four numeric variables, there are many other variables in the original dataset, they may have some potential relationship between these variables that effect G3, and may give us a totally different result.\
+Also, only using G1 and G2 seems a good idea in LDA, this may give us a better accuracy in confusion matrix, and a lower error rate in partition plot.\
 
 
 
