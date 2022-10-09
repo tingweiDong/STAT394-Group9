@@ -261,7 +261,7 @@ $$
 
 ## Diagnostics of Full Model
 
-```{r diag1, fig.cap="Diagnostic Plot for Full Model", echo=FALSE, warning=FALSE, fig.height=6}
+```{r diag1, fig.cap="", echo=FALSE, warning=FALSE, fig.height=5}
 PCAdf <- data.frame(df_num$G3, PCA$x)
 modPCA12 <- lm(df_num.G3 ~ PC1 + PC2, data=PCAdf)
 modPCA123 <- lm(df_num.G3 ~ PC1 + PC2 + PC3, data=PCAdf)
@@ -273,11 +273,17 @@ plot(modNormal)
 
 ## Diagnostics of PC12 Model
 
-```{r diag2, fig.cap="Diagnostic Plot for Model with PC1 and PC2", echo=FALSE, warning=FALSE, fig.height=6}
+```{r diag2, fig.cap="", echo=FALSE, warning=FALSE, fig.height=5}
 par(mfrow=c(2,2))
 plot(modPCA12)
 ```
 
+## Diagnostics of PC123 Model
+
+```{r diag3, fig.cap="", echo=FALSE, warning=FALSE, fig.height=5}
+par(mfrow=c(2,2))
+plot(modPCA123)
+```
 
 ## Model Comparison
 
@@ -292,4 +298,4 @@ Check AIC, BIC and Adjusted $R^2$
 
 - In contrast with what we have seen in the scree plot before, PC123 model is the 'best' model so far.
 
-- We can reduce the number of variables to 3 instead of using 4 variables to predict G3
+- We can reduce the number of variables to 3 instead of using 4 variables to predict the final grade.

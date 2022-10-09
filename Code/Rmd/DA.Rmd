@@ -15,6 +15,7 @@ require(ggord)
 require(klaR)
 require(pander)
 require(bookdown)
+require(HDtest)
 ```
 
 ```{r, echo = FALSE}
@@ -76,10 +77,13 @@ pch=21)
 ### Covariance matrix
 
 Table \@ref(tab:covfail) and table \@ref(tab:covpass) are the covariance matrices of two groups.\
-From two tables, there are not much different between two groups.\
+We have conducted two-sample HD test to check equal covariance matrices. Table \@ref(tab:covtest) show the result of the test indicating unequal covariance matrices.\
 
-```{r, echo=FALSE}
-df_split<-split(df_DA,df_DA$Label)
+```{r, echo=FALSE, message=FALSE, error=FALSE}
+df_split<- split(df_DA,df_DA$Label)
+covtest <- testCov(df_split$Fail[,-5], df_split$Pass[,-5])
+
+#pander(covtest$HD,caption = "Two-Sample HD test Result")
 #cov(df_split$Fail[,-5])
 #cov(df_split$Pass[,-5])
 ```
@@ -114,9 +118,22 @@ G2       & -0.27 & -1.55  & 6.06 & 6.41 \\
 \end{tabular}(\#tab:covpass)
 \end{table}
 
+
+\begin{table}[ht]
+\centering
+\caption {Two-Sample HD test Result}
+\begin{tabular}{lll}
+  \hline
+Test statistics & P value & Alternative hypothesis \\ 
+  \hline
+ 7.519     &   0 * * *     &    two.sided  \\
+   \hline
+\end{tabular}(\#tab:covtest)
+\end{table}
+
 ### Conclusion
 
-From two results above, this dataset fit the two underlying hypotheses, LDA will work well with this dataset.\
+From the equal covariance matrices test result, it shows that LDA might not work well. However, by looking at the covariance matrices, it seems they are practically not much different with each other. Thus, we will continue with LDA.\
 
 ## LDA Histogram
 
