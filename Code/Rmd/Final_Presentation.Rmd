@@ -15,7 +15,10 @@ require(gridExtra)
 require(pander)
 require(xtable)
 require(bookdown)
-
+require(psych)
+require(MASS)
+require(ggord)
+require(klaR)
 ```
 
 ```{r read, include=FALSE}
@@ -299,3 +302,78 @@ Check AIC, BIC and Adjusted $R^2$
 - In contrast with what we have seen in the scree plot before, PC123 model is the 'best' model so far.
 
 - We can reduce the number of variables to 3 instead of using 4 variables to predict the final grade.
+
+## LDA {.smaller}
+
+-   Fail:   G3 grade under $10$. Total Fail students: $130$.\
+-   Pass:   G3 grade equal and above $10$. Total Pass students:$265$.\
+
+```{r ldaPairs, echo=FALSE}
+G3 <- df_num$G3
+Label = c()
+for(i in 1:length(G3)){
+  if(G3[i]>=10){
+    Label[i] <- "Pass"
+  }else {
+    Label[i] <- "Fail"
+  }
+}
+Label <- data.frame(Label)
+df_num <- cbind(df_num,Label)
+df_DA <- df_num[-c(5)]
+df_DA$Label <- as.factor(df_DA$Label)
+pairs.panels(df_DA[, -5],gap=0, bg=c("red", "green")[df_DA$Label],
+pch=21)
+```
+
+## LDA Histogram
+
+Split the dataset into two subsets. $70\%$ as training, and $30\%$ as test.\
+This plot shows some overlap observed between two groups. and also some of the observations can be observed clearly which group they belong to.\
+
+```{r ldahist, echo=FALSE}
+set.seed(2022394)
+ind <- sample(c("Train","Test"),
+              nrow(df_DA),replace = TRUE,prob = c(.7, .3))
+Train <- df_DA[ind=="Train",]
+Test <- df_DA[ind=="Test",]
+LDA <- lda(Label~age+absences+G1+G2,data=Train)
+Pred <- predict(LDA)
+ldahist(data=Pred$x[,1],g=Train$Label)
+```
+
+## LDA Partition Plot
+
+```{r ldapart, echo=FALSE}
+partimat(Label~., data=Train, method="lda",prec=300)
+```
+
+## LDA Confusion Matrix
+
+<div class="columns-2">
+Training data
+
+|       | Fail   | Pass   |
+|-------|--------|--------|
+|Fail   | 80     | 15     |
+|Pass   | 18     | 175    |
+-   Accuracy: 0.89, Precision: 0.84, Recall: 0.82.\
+
+<style>
+.forceBreak { -webkit-column-break-after: always; break-after: column; }
+</style>
+
+Test data
+
+|       | Fail   | Pass   |
+|-------|--------|--------|
+|Fail   | 27     | 4      |
+|Pass   | 5      | 71     |
+-   Accuracy: 0.92, Precision: 0.87, Recall: 0.84.\
+
+## LDA Conclusion
+
+-   Nice result in LDA, and show what we expected in the plots and the tables.\
+-   Naive Bayes model to see if it gives us a better model, but the result is not as good as LDA, and we do not show the results here.\
+-   There are many other variables in the original dataset, they may have some potential relationship between these variables that effect G3, and may give us a totally different result.\
+-   Only using G1 and G2 to predict G3 seems a good idea, this may give us a better accuracy, and a lower error rate.\

@@ -39,8 +39,8 @@ From our previous analyse in EDA, there might have a way to define G3 by a linea
 
 ## Define Label
 
-Since G3 will be the class label, and the full mark of G3 is $20$, therefore, grades that below $10$ will be labelled as Fail, and equal or above $10$ will be Pass.\
-The table shows the total students in each labels, there are 265 students pass the course, and 130 students who failed.\
+Since G3 will be the class label, and the full mark of G3 is $20$, therefore, grades that below $10$ will be labelled as Fail, and equal and above $10$ will be Pass.\
+The table shows the total students in each labels, there are $265$ students pass the course, and $130$ students who failed.\
 
 ```{r, echo=FALSE}
 G3 <- df_num$G3
