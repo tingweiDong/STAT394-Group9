@@ -137,11 +137,12 @@ From the equal covariance matrices test result, it shows that LDA might not work
 
 ## LDA Histogram
 
-We split the dataset into training data and test data, we use $70\%$ of the original dataset as training data, and $30\%$ as test data.\
+We split the dataset into training data and test data randomly, we use $70\%$ of the original dataset as training data, and $30\%$ as test data.\
 We first want to train LDA with the training dataset.\
-Table \@ref(tab:ldaprob) shows there are $33.6\%$ students in training data are Fail, and $66.4\%$ are Pass. This result is kind of what we expected, since we have $130$ Fail and $265$ Pass.\
+Table \@ref(tab:ldaprob) shows there are $34.0\%$ students in training data are Fail, and $66.0\%$ are Pass. This result is kind of what we expected, since we have $130$ Fail and $265$ Pass.\
 
 ```{r include=FALSE}
+set.seed(2022394)
 ind <- sample(c("Train","Test"),
               nrow(df_DA),replace = TRUE,prob = c(.7, .3))
 Train <- df_DA[ind=="Train",]
@@ -156,13 +157,13 @@ LDA <- lda(Label~age+absences+G1+G2,data=Train)
   \hline
 Fail & Pass \\ 
   \hline
-0.336 & 0.664 \\
+0.340 & 0.659 \\
    \hline
 \end{tabular}(\#tab:ldaprob)
 \end{table}
 
 \newpage
-Figure \@ref(fig:ldahist) shows the LDA histogram of Fail and Pass. This plot shows that some of the observations are mixed together in the middle part that not easy to separate into two groups, and rest of the observations can be splited into two groups clearly.\
+Figure \@ref(fig:ldahist) shows the LDA histogram of Fail and Pass. This plot shows some overlap observed between two groups. and also some of the observations can be observed clearly which group they belong to.\
 
 ```{r ldahist, fig.cap="LDA histogram of two groups",echo=FALSE}
 Pred <- predict(LDA)
@@ -173,7 +174,7 @@ ldahist(data=Pred$x[,1],g=Train$Label)
 ## Partition Plot
 
 Figure \@ref(fig:ldapart) is the partition plot. In general, we have a really nice result with small error rate.\
-The smallest error rate is $0.077$ which is the plot of G1 and G2, this result is what we expected, since G1 and G2 have the highest correlation with G3. In the pairs plot above, this also shows that this plot may give us the best result.\
+The smallest error rate is $0.108$ which is the plot of G1 and G2, this result is what we expected, since G1 and G2 have the highest correlation with G3. In the pairs plot above, this also shows that this plot may give us the best result.\
 
 ```{r ldapart, fig.cap="Partition plot of training data", echo=FALSE}
 partimat(Label~., data=Train, method="lda",prec=300)
@@ -182,9 +183,9 @@ partimat(Label~., data=Train, method="lda",prec=300)
 \newpage
 ## Confusion matrix
 
-Table \@ref(tab:trainmat) and table \@ref(tab:testmat) are the confusion matrices. From the the matrices, training data has an accuracy of $0.91$ and test data has accuracy of $0.85$, both give us a nice result.\
+Table \@ref(tab:trainmat) and table \@ref(tab:testmat) are the confusion matrices. From the the matrices, training data has an accuracy of $0.89$ and test data has accuracy of $0.92$, both give us a nice result.\
 However, the total students in two groups are not equal, therefore, we need to check Recall and Precision as well.\
-In training data, we have precision $0.86$ and recall $0.89$, and in test data we have precision $0.65$ and recall $0.84$. The result here in training data gives a good result, but in test data we have a poor precision result.\
+In training data, we have precision $0.84$ and recall $0.82$, and in test data we have precision $0.87$ and recall $0.84$. The result here in both training data and test data gives a good result.
 In general, LDA gives a quite nice model, and the dataset can fit LDA well.\
 
 
@@ -208,8 +209,8 @@ confusion_Test[1]/(confusion_Test[1]+confusion_Test[2])
   \hline
 & Fail & Pass \\ 
   \hline
-Fail & 88 & 14 \\
-Pass & 11 & 158 \\
+Fail & 80 & 15 \\
+Pass & 18 & 175 \\
    \hline
 \end{tabular}(\#tab:trainmat)
 \end{table}
@@ -221,8 +222,8 @@ Pass & 11 & 158 \\
   \hline
 & Fail & Pass \\ 
   \hline
-Fail & 26 & 14 \\
-Pass & 5 & 79 \\
+Fail & 27 & 4 \\
+Pass & 5 & 71 \\
    \hline
 \end{tabular}(\#tab:testmat)
 \end{table}
