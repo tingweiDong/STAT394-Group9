@@ -148,72 +148,12 @@ grid.arrange(lp2[[1]], lp2[[2]], lp2[[3]],lp2[[4]],lp2[[5]],nrow = 2,ncol = 3)
 -   Mean: Age 17, Number of absences 6, G1 grade 11, G2 grade 11, G3 grade 10
 -   Variance: Age 1.63, Number of absences 64.05, G1 grade 11.02, G2 grade 14.15, G3 grade 20.99
 
-## Multivariate Normal Distribution by splitting data by Sex and Failures{.smaller .columns-2 .flexbox .vcenter}
 
-<div class="columns-2">
+## Leading Questions
 
-<style>
-.forceBreak { -webkit-column-break-after: always; break-after: column; }
-</style>
+- Can PCA reduce the number of dimensions to model the students' final grade?\
 
-Female and has failed the other course
-
-|  | $\hat{\beta}$ | $\kappa$ | p-val     |
-|----------|----------|-------|-----------|
-| Skewness | 15.87    | 105.8 | 4.901e-09 |
-| Kurtosis | 41.48    | 2.448 | 0.01437   |
-
-Male and has failed the other course
-
-| | $\hat{\beta}$ | $\kappa$  | p-val    |
-|----------|----------|--------|-----------|
-| Skewness | 10.48    | 75.14  | 9.406e-05 |
-| Kurtosis | 35.42    | 0.1643 | 0.8695    |
-
-<p class="forceBreak">
-</p>
-
-Female and has NEVER failed the other course
-
-| | $\hat{\beta}$ | $\kappa$ | p-val |
-|----------|----------|-------|-------|
-| Skewness | 40.14    | 1124  | 0     |
-| Kurtosis | 76.29    | 31.98 | 0     |
-
-Male and has NEVER failed the other course
-
-| | $\hat{\beta}$ | $\kappa$ | p-val |
-|----------|----------|-------|-------|
-| Skewness | 24.02    | 576.5 | 0     |
-| Kurtosis | 66.68    | 22.72 | 0     |
-
-</div>
-
-<div class="centered">
--   For normal distribution, kurtosis value is approximately equal to 3, skewness is equal to 0 or approximately close to 0.
-</div>
-
-
-
-```{r, include=FALSE}
-df_all <- cbind(df, df_num) 
-df_all$fail <- ifelse(df_all$Failures != "0", 1, 0)
-
-f1 <- df_num[df_all$Sex == "F" & df_all$fail == 1,]
-m1 <- df_num[df_all$Sex == "M" & df_all$fail == 1,]
-f0 <- df_num[df_all$Sex == "F" & df_all$fail == 0,]
-m0 <- df_num[df_all$Sex == "M" & df_all$fail == 0,]
-
-set.caption("Female and has failed the other course")
-pander(mult.norm(f1)$mult.test)
-set.caption("Male and has failed the other course")
-pander(mult.norm(m1)$mult.test)
-set.caption("Female and has NEVER failed the other course")
-pander(mult.norm(f0)$mult.test)
-set.caption("Male and has NEVER failed the other course")
-pander(mult.norm(m0)$mult.test)
-```
-
+- Can we have a discriminant model to classify students whether they pass or fail based on the other features(e.g., first test grade, age, etc)?\
 
 
 
@@ -371,9 +311,21 @@ Test data
 |Pass   | 5      | 71     |
 -   Accuracy: 0.92, Precision: 0.87, Recall: 0.84.\
 
-## LDA Conclusion
+## Problems 
 
--   Nice result in LDA, and show what we expected in the plots and the tables.\
--   Naive Bayes model to see if it gives us a better model, but the result is not as good as LDA, and we do not show the results here.\
--   There are many other variables in the original dataset, they may have some potential relationship between these variables that effect G3, and may give us a totally different result.\
+-   We tried using a Naive Bayes model to see if it gives us a better model, but the result is not as good as LDA, and we do not show the results here.\
+
+-   There are many other variables in the original dataset. They may have some potential relationship between these variables that effect G3 and may give us a totally different result, or explain any anomalies present within the data. We did not have access to these variables hence we do not know the impact it may have on our analysis.\
+
+- The dataset used is only for students in 2005/2006, it is currently 2022... If we were able to acquire a dataset for 2021/2022 or within the last 5 years it would be of more benefit towards the current generation of high school students as the curriculum has and will change over time. 
+
+## Conclusion
+
+-   LDA gave us nice results, and showed what we expected in the plots and the tables.\
+
 -   Only using G1 and G2 to predict G3 seems a good idea, this may give us a better accuracy, and a lower error rate.\
+
+- Using PCA We can reduce the number of variables to 3 instead of using 4 variables to predict the final grade. The PC123 model worked best.\
+
+
+# Thank you!
