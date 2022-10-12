@@ -10,6 +10,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 require(ggplot2)
+require(ggcorrplot)
 require(ggthemes)
 require(gridExtra)
 require(pander)
@@ -148,6 +149,18 @@ grid.arrange(lp2[[1]], lp2[[2]], lp2[[3]],lp2[[4]],lp2[[5]],nrow = 2,ncol = 3)
 -   Mean: Age 17, Number of absences 6, G1 grade 11, G2 grade 11, G3 grade 10
 -   Variance: Age 1.63, Number of absences 64.05, G1 grade 11.02, G2 grade 14.15, G3 grade 20.99
 
+## EDA
+
+bar plot that shows how many number of students have passed or failed 
+
+## Correlation
+
+```{r corplt,fig.height=4, fig.cap="Correlation between five Numerical Variables", fig.pos="center", echo=FALSE, warning=FALSE, out.width="99%"}
+ggcorrplot(cor(df_num),
+method = "circle",
+hc.order = TRUE,
+type = "lower")
+```
 
 ## Leading Questions
 
