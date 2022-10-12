@@ -171,36 +171,6 @@ barplot(table(df_DA$Label),
         ylab="Count")
 ```
 
-## EDA - Box Plot
-
-```{r box, fig.height=5, fig.cap="Boxplot of Final grade against 3 categorical variables", echo=FALSE, warning=FALSE, message=FALSE}
-lp <- list()
-df_all <- cbind(df, df_num)
-for (i in 1:length(names(df))){
-   lp[[i]] <- ggplot(df_all, aes_string(x=names(df)[i], y="G3", col = names(df)[[i]])) + 
-    geom_boxplot(notch=TRUE) +
-     labs(y="Final Grade")
-}
-
-lp2 <- list()
-for (i in 1:length(names(df))){
-   lp2[[i]] <- ggplot(df_all, aes_string(x=names(df)[i], y="absences", col = names(df)[[i]])) + 
-    geom_boxplot(notch=TRUE) +
-     labs(y="Number of Absences")
-}
-
-lp3 <- list()
-for (i in 1:length(names(df))){
-   lp3[[i]] <- ggplot(df_all, aes_string(x=names(df)[i], y="age", col = names(df)[[i]])) + 
-    geom_boxplot(notch=TRUE) +
-     labs(y="Age")
-}
-
-
-grid.arrange(lp[[1]], lp[[2]], lp[[3]],
-             lp2[[1]], lp2[[2]], lp2[[3]],
-             lp3[[1]], lp3[[2]], lp3[[3]],ncol = 3)
-```
 
 
 ## EDA - Correlation
@@ -384,11 +354,13 @@ Test data
 
 ## Conclusion
 
--   LDA gave us nice results, and showed what we expected in the plots and the tables.\
+-   In response to the leading questions the analysis was very satisfactory. As we wanted to correctly use the tools of PCA and Discriminant Analysis for our dataset.\
 
--   Only using G1 and G2 to predict G3 seems a good idea, this may give us a better accuracy, and a lower error rate.\
+-   Using the PCA we successfully reduced the number of variables to 3 instead of 4. With the PC123 model working best.\
 
-- Using PCA We can reduce the number of variables to 3 instead of using 4 variables to predict the final grade. The PC123 model worked best.\
+-   The LDA gave us nice results as well especially with G1 and G2 variables (first and second period grades) having minimal wrong classifications. Which showed nicely in the plots and tables. This aligns with common sense that the performances in other periods would best classify G1 performance.\
+
+-   As mentioned in our problems on closer look at how the data was gathered it is unfortunately hard to see the relevance of this data in 2022, in NZ, post COVID and online learning. Nonetheless our actual analysis of this data proved to be successful.\
 
 
 # Thank you!
