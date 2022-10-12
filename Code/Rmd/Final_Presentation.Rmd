@@ -149,13 +149,31 @@ grid.arrange(lp2[[1]], lp2[[2]], lp2[[3]],lp2[[4]],lp2[[5]],nrow = 2,ncol = 3)
 -   Mean: Age 17, Number of absences 6, G1 grade 11, G2 grade 11, G3 grade 10
 -   Variance: Age 1.63, Number of absences 64.05, G1 grade 11.02, G2 grade 14.15, G3 grade 20.99
 
-## EDA
+## EDA - Target Variable
 
-bar plot that shows how many number of students have passed or failed 
+```{r, fig.height=4, fig.cap="Barplot of G3", echo=FALSE, warning=FALSE, message=FALSE, out.width="99%"}
+G3 <- df_num$G3
+Label = c()
+for(i in 1:length(G3)){
+  if(G3[i]>=10){
+    Label[i] <- "Pass"
+  }else {
+    Label[i] <- "Fail"
+  }
+}
+Label <- data.frame(Label)
+df_num_tem <- cbind(df_num,Label)
+df_DA <- df_num_tem[-c(5)]
+df_DA$Label <- as.factor(df_DA$Label)
+barplot(table(df_DA$Label),
+        main="Pass/Fail Count of Final Grade",
+        xlab="G3 result",
+        ylab="Count")
+```
 
 ## EDA - Box Plot
 
-```{r box, fig.height=6, fig.cap="Boxplot of Final grade against 3 categorical variables", echo=FALSE, warning=FALSE, message=FALSE}
+```{r box, fig.height=5, fig.cap="Boxplot of Final grade against 3 categorical variables", echo=FALSE, warning=FALSE, message=FALSE}
 lp <- list()
 df_all <- cbind(df, df_num)
 for (i in 1:length(names(df))){
