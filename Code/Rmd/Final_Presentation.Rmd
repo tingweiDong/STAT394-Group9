@@ -153,7 +153,39 @@ grid.arrange(lp2[[1]], lp2[[2]], lp2[[3]],lp2[[4]],lp2[[5]],nrow = 2,ncol = 3)
 
 bar plot that shows how many number of students have passed or failed 
 
-## Correlation
+## EDA - Box Plot
+
+```{r box, fig.height=6, fig.cap="Boxplot of Final grade against 3 categorical variables", echo=FALSE, warning=FALSE, message=FALSE}
+lp <- list()
+df_all <- cbind(df, df_num)
+for (i in 1:length(names(df))){
+   lp[[i]] <- ggplot(df_all, aes_string(x=names(df)[i], y="G3", col = names(df)[[i]])) + 
+    geom_boxplot(notch=TRUE) +
+     labs(y="Final Grade")
+}
+
+lp2 <- list()
+for (i in 1:length(names(df))){
+   lp2[[i]] <- ggplot(df_all, aes_string(x=names(df)[i], y="absences", col = names(df)[[i]])) + 
+    geom_boxplot(notch=TRUE) +
+     labs(y="Number of Absences")
+}
+
+lp3 <- list()
+for (i in 1:length(names(df))){
+   lp3[[i]] <- ggplot(df_all, aes_string(x=names(df)[i], y="age", col = names(df)[[i]])) + 
+    geom_boxplot(notch=TRUE) +
+     labs(y="Age")
+}
+
+
+grid.arrange(lp[[1]], lp[[2]], lp[[3]],
+             lp2[[1]], lp2[[2]], lp2[[3]],
+             lp3[[1]], lp3[[2]], lp3[[3]],ncol = 3)
+```
+
+
+## EDA - Correlation
 
 ```{r corplt,fig.height=4, fig.cap="Correlation between five Numerical Variables", fig.pos="center", echo=FALSE, warning=FALSE, out.width="99%"}
 ggcorrplot(cor(df_num),
