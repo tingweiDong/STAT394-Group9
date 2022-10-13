@@ -16,7 +16,10 @@ require(gridExtra)
 require(pander)
 require(xtable)
 require(bookdown)
-
+require(psych)
+require(MASS)
+require(klaR)
+require(HDtest)
 ```
 
 
@@ -144,7 +147,205 @@ Full Model & 1637.29 & 1661.16 & 0.83 \\
 \end{tabular}  (\#tab:IC)
 \end{table}
 
+\newpage
+# Linear Discriminant Analysis - LDA
 
+After EDA and PCA, we are familiar with our dataset, and we want to actually use this dataset to predict whether a student will Fail or Pass the math course, if we have all the information except the final grade G3 of this student.\
+From our previous analyse in EDA, there might have a way to define G3 by a linear combination of the input variables. Therefore, LDA will be applied.\
+
+## Define Label
+
+Since G3 will be the class label, and the full mark of G3 is $20$, therefore, grades that below $10$ will be labelled as Fail, and equal and above $10$ will be Pass.\
+The table shows the total students in each labels, there are $265$ students pass the course, and $130$ students who failed.\
+
+```{r, echo=FALSE}
+G3 <- df_num$G3
+Label = c()
+for(i in 1:length(G3)){
+  if(G3[i]>=10){
+    Label[i] <- "Pass"
+  }else {
+    Label[i] <- "Fail"
+  }
+}
+Label <- data.frame(Label)
+df_num <- cbind(df_num,Label)
+df_DA <- df_num[-c(5)]
+df_DA$Label <- as.factor(df_DA$Label)
+pander(table(df_DA$Label))
+```
+
+## LDA Underlying hypotheses
+
+There are two main hypotheses that need to check before any further analyse.\
+- The classes are linearly separable.\
+- The covariance matrices are not too different.\
+
+### Pairs plot
+
+Figure \@ref(fig:ldaPairs) shows the pairs plot of 4 numerical varialbes with two class labels. The red dots are Fail, and the green dots are Pass.\
+From this plot, we have correlation coefficients, in scatterplots, we can see G1 and G2 are good to separate between two groups, and the two classes are kind of linearly separable, in other cases, there is an overlapping and not a clear separation between two groups.\
+
+
+```{r ldaPairs, fig.cap="Pairs plot of 4 numerical variables with two class label colors", echo=FALSE}
+pairs.panels(df_DA[, -5],gap=0, bg=c("red", "green")[df_DA$Label],
+pch=21)
+```
+
+### Covariance matrix
+
+Table \@ref(tab:covfail) and table \@ref(tab:covpass) are the covariance matrices of two groups.\
+We have conducted two-sample HD test to check equal covariance matrices. Table \@ref(tab:covtest) show the result of the test indicating unequal covariance matrices.\
+
+```{r, echo=FALSE, message=FALSE, error=FALSE}
+df_split<- split(df_DA,df_DA$Label)
+covtest <- testCov(df_split$Fail[,-5], df_split$Pass[,-5])
+
+#pander(covtest$HD,caption = "Two-Sample HD test Result")
+#cov(df_split$Fail[,-5])
+#cov(df_split$Pass[,-5])
+```
+
+\newpage
+\begin{table}[ht]
+\centering
+\caption {Covariance Matrix of Fail Group}
+\begin{tabular}{lllll}
+  \hline
+ & age & absences & G1 & G2 \\ 
+  \hline
+age      & 1.91  & 1.61   & -0.14 & 0.35 \\
+absences & 1.61  & 109.76 & 2.41  & 6.41 \\ 
+G1       & -0.14 & 2.41   & 2.90  & 1.70 \\
+G2       & 0.35  & 6.41   & 1.70  & 7.36 \\
+   \hline
+\end{tabular}(\#tab:covfail)
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption {Covariance Matrix of Pass Group}
+\begin{tabular}{lllll}
+  \hline
+ & age & absences & G1 & G2 \\ 
+  \hline
+age      & 1.42  & 1.63   & 0.42 & -0.27 \\
+absences & 1.63  & 41.14  & 0.03 & -1.55 \\ 
+G1       & 0.412 & 0.03   & 7.76 & 6.06 \\
+G2       & -0.27 & -1.55  & 6.06 & 6.41 \\
+   \hline
+\end{tabular}(\#tab:covpass)
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption {Two-Sample HD test Result}
+\begin{tabular}{lll}
+  \hline
+Test statistics & P value & Alternative hypothesis \\ 
+  \hline
+ 7.519     &   0 * * *     &    two.sided  \\
+   \hline
+\end{tabular}(\#tab:covtest)
+\end{table}
+
+\newpage
+### Conclusion
+
+From the equal covariance matrices test result, it shows that LDA might not work well. However, by looking at the covariance matrices, it seems they are practically not much different with each other. Thus, we will continue with LDA.\
+
+## LDA Histogram
+
+We split the dataset into training data and test data randomly, we use $70\%$ of the original dataset as training data, and $30\%$ as test data.\
+We first want to train LDA with the training dataset.\
+Table \@ref(tab:ldaprob) shows there are $34.0\%$ students in training data are Fail, and $66.0\%$ are Pass. This result is kind of what we expected, since we have $130$ Fail and $265$ Pass.\
+
+```{r include=FALSE}
+set.seed(2022394)
+ind <- sample(c("Train","Test"),
+              nrow(df_DA),replace = TRUE,prob = c(.7, .3))
+Train <- df_DA[ind=="Train",]
+Test <- df_DA[ind=="Test",]
+LDA <- lda(Label~age+absences+G1+G2,data=Train)
+```
+
+\begin{table}[ht]
+\centering
+\caption {Prior probabilities of groups}
+\begin{tabular}{ll}
+  \hline
+Fail & Pass \\ 
+  \hline
+0.340 & 0.659 \\
+   \hline
+\end{tabular}(\#tab:ldaprob)
+\end{table}
+
+\newpage
+Figure \@ref(fig:ldahist) shows that the separation between two groups, but there is an overlapping which is not great. It seems for LDA, it is hard to separate students into two groups for students who have a G3 mark around 10.
+
+```{r ldahist, fig.cap="LDA histogram of two groups",echo=FALSE}
+Pred <- predict(LDA)
+ldahist(data=Pred$x[,1],g=Train$Label)
+```
+
+\newpage
+## Partition Plot
+
+Figure \@ref(fig:ldapart) is the partition plot. In general, we have a really nice result with small error rate.\
+The smallest error rate is $0.108$ which is the plot of G1 and G2, this result is what we expected, since G1 and G2 have the highest correlation with G3. In the pairs plot above, this also shows that this plot may give us the best result.\
+
+```{r ldapart, fig.cap="Partition plot of training data", echo=FALSE}
+partimat(Label~., data=Train, method="lda",prec=300)
+```
+
+\newpage
+## Confusion matrix
+
+Table \@ref(tab:trainmat) and table \@ref(tab:testmat) are the confusion matrices. From the the matrices, training data has an accuracy of $0.89$ and test data has accuracy of $0.92$, both give us a nice result.\
+However, the total students in two groups are not equal, therefore, we need to check Recall and Precision as well.\
+In training data, we have precision $0.84$ and recall $0.82$, and in test data we have precision $0.87$ and recall $0.84$. The result here in both training data and test data gives a good result.
+In general, LDA gives a quite nice model, and the dataset can fit LDA well.\
+
+
+```{r, include=FALSE}
+optPred <- predict(LDA, Train)$class
+confusion_Train <- table(optPred, Actual=Train$Label)
+realPred <- predict(LDA,Test)$class
+confusion_Test <- table(realPred, Actual=Test$Label)
+sum(diag(confusion_Train))/sum(confusion_Train)
+sum(diag(confusion_Test))/sum(confusion_Test)
+confusion_Train[1]/(confusion_Train[1]+confusion_Train[3])
+confusion_Train[1]/(confusion_Train[1]+confusion_Train[2])
+confusion_Test[1]/(confusion_Test[1]+confusion_Test[3])
+confusion_Test[1]/(confusion_Test[1]+confusion_Test[2])
+```
+
+\begin{table}[ht]
+\centering
+\caption {Confusion matrix of training data}
+\begin{tabular}{lll}
+  \hline
+& Fail & Pass \\ 
+  \hline
+Fail & 80 & 15 \\
+Pass & 18 & 175 \\
+   \hline
+\end{tabular}(\#tab:trainmat)
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption {Confusion matrix of test data}
+\begin{tabular}{lll}
+  \hline
+& Fail & Pass \\ 
+  \hline
+Fail & 27 & 4 \\
+Pass & 5 & 71 \\
+   \hline
+\end{tabular}(\#tab:testmat)
+\end{table}
 
 
 
