@@ -37,6 +37,9 @@ df_num = data.frame(student$age, student$absences, student$G1, student$G2, stude
 names(df_num) <- c("age", "absences", "G1","G2","G3")
 ```
 
+# Methodology
+
+We have used two methods to analyse the student performance dataset. Firstly, we have used Priciple Component Analysis to see if we can reduce the number of variables to model the students' final grade. We have four numerical predictors(First test score, Second test score, Number of absences and Age). we would like to reduce the by using PCA. Secondly, we have used Linear Discriminant Analysis to classify the students whether they pass or fail the math course based on the other predictors. We have used 70% of the data to train LDA and 30% of the data to validate the model.
 
 # PCA
 
