@@ -195,10 +195,11 @@ pairs.panels(df_DA[, -5],gap=0, bg=c("red", "green")[df_DA$Label],
 pch=21)
 ```
 
+\newpage
 ### Covariance matrix
 
 Table \@ref(tab:covfail) and table \@ref(tab:covpass) are the covariance matrices of two groups.\
-We have conducted two-sample HD test to check equal covariance matrices. Table \@ref(tab:covtest) show the result of the test indicating unequal covariance matrices.\
+We have conducted two-sample HD test to check equal covariance matrices. Table \@ref(tab:covtest) show the result of the test indicating unequal covariance matrices.\ From the equal covariance matrices test result, it shows that LDA might not work well. However, by looking at the covariance matrices, it seems they are practically not much different with each other. Thus, we will continue with LDA.\
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE}
 df_split<- split(df_DA,df_DA$Label)
@@ -209,7 +210,7 @@ covtest <- testCov(df_split$Fail[,-5], df_split$Pass[,-5])
 #cov(df_split$Pass[,-5])
 ```
 
-\newpage
+
 \begin{table}[ht]
 \centering
 \caption {Covariance Matrix of Fail Group}
@@ -253,9 +254,7 @@ Test statistics & P value & Alternative hypothesis \\
 \end{table}
 
 \newpage
-### Conclusion
 
-From the equal covariance matrices test result, it shows that LDA might not work well. However, by looking at the covariance matrices, it seems they are practically not much different with each other. Thus, we will continue with LDA.\
 
 ## LDA Histogram
 
