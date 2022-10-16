@@ -40,7 +40,7 @@ names(df_num) <- c("age", "absences", "G1","G2","G3")
 
 # Introduction
 
-The data is about student academic grades for math course of two Portuguese secondary public school during the 2005/2006 school year [@Dataset]. Student grades and their economic, social and demographic variables are included in the data. The data is based on the reports of two public schools (i.e., the grades of students and the number of absence days) and the questionnaire answers by the students. All of the demographic, ecnomic and social variables were collected using the questionnaire. The dataset have 395 records in total with 5 numerical variables and 28 categorical variables. The numerical variables include age, number of school absences, 1st Period grade, 2nd period grade and final period grade. The categorical variables include sex, address(urban/rural), parents highest qualification, family size, commuting time, study time and so on.
+The data is about student academic grades for math course of two Portuguese secondary public school during the 2005/2006 school year [@Dataset]. Student grades and their economic, social and demographic variables are included in the data. The data is based on the reports of two public schools (i.e., the grades of students and the number of absence days) and the questionnaire answers by the students. All of the demographic, economic and social variables were collected using the questionnaire. The dataset have 395 records in total with 5 numerical variables and 28 categorical variables. The numerical variables include age, number of school absences, 1st Period grade, 2nd period grade and final period grade. The categorical variables include sex, address(urban/rural), parents highest qualification, family size, commuting time, study time and so on.
 
 
 We are motivated by this dataset since we are students of Math and Statistics school and interested in what features have associations with overall math grade. It would be interesting to explore the performance of students in math course by demographic variables (e.g., does math grade differ by gender?). It could also be interesting to find how economic status of parent of student relates to the grade. Our initial goal of this project is to find the important predictors of student grade out of many demographic, economic and social features.
@@ -305,6 +305,7 @@ grid.arrange(lp[[1]], lp[[2]], lp[[3]],
 # Methodology
 
 We have used two methods to analyse the student performance dataset. Firstly, we have used Principle Component Analysis to see if we can reduce the number of variables to model the students' final grade. We have four numerical predictors(First test score, Second test score, Number of absences and Age). we would like to reduce the by using PCA. Secondly, we have used Linear Discriminant Analysis to classify the students whether they pass or fail the math course based on the other predictors. We have used 70% of the data to train LDA and 30% of the data to validate the model.
+
 
 # PCA
 
@@ -627,7 +628,7 @@ Pass & 5 & 71 \\
 
 -   With the PCA we successfully reduced the number of variables to 3 instead of 4. Shown by the favorable AIC, BIC and adjusted R squared scores of the PC123 model.\
 
--   After verifying assumptions our LDA gave us nice results as well. The G1 and G2 variables (first and second period grade) seemed to be the best indicator for classifying G3. This was represented nicely in the partition plots and later verified in the confusion matrix. This was a very satisfying insight as it aligns with common sense that the performances in other periods would best classify G1 performance.\
+-   After verifying assumptions our LDA gave us nice results as well. The G1 and G2 variables (first and second period scores) seemed to be the best indicator for classifying G3. This was represented nicely in the partition plots and later verified in the confusion matrix. This was a very satisfying insight as it aligns with common sense that the performances in other periods would best classify G1 performance.\
 
 -   Although very satisfied in our analysis of the data. It was only in reviewing the collection of this data that we began to question the relevance of this analysis. As mentioned in our problems it is difficult to see how data from 2005/2006 from Portugal holds relevance in 2021/2022. A more modern collection of data would be great next step to analyse especially after the fantastic insights we gained here.\
 
