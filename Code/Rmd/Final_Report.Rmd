@@ -48,7 +48,7 @@ names(df_num) <- c("age", "absences", "G1","G2","G3")
 
 # Methodology
 
-We have used two methods to analyse the student performance dataset. Firstly, we have used Priciple Component Analysis to see if we can reduce the number of variables to model the students' final grade. We have four numerical predictors(First test score, Second test score, Number of absences and Age). we would like to reduce the by using PCA. Secondly, we have used Linear Discriminant Analysis to classify the students whether they pass or fail the math course based on the other predictors. We have used 70% of the data to train LDA and 30% of the data to validate the model.
+We have used two methods to analyse the student performance dataset. Firstly, we have used Priciple Component Analysis to see if we can reduce the number of variables to model the students' final grade. We have four numerical predictors(First period score, Second period score, Number of absences and Age). we would like to reduce the by using PCA. Secondly, we have used Linear Discriminant Analysis to classify the students whether they pass or fail the math course based on the other predictors. We have used 70% of the data to train LDA and 30% of the data to validate the model.
 
 # PCA
 
@@ -358,21 +358,20 @@ Pass & 5 & 71 \\
 \end{tabular}(\#tab:testmat)
 \end{table}
 
-# Discussion
 
-## Problems
+# Problems
 -   We tried using a Naive Bayes model to see if it gives us a better model, but the result is not as good as LDA, and we do not show the results here.\
 
 -   There are many other variables in the original dataset. They may have some potential relationship between these variables that effect G3 and may give us a totally different result, or explain any anomalies present within the data. We did not have access to these variables hence we do not know the impact it may have on our analysis.\
 
 - The dataset used is only for students in 2005/2006, whereas it is currently 2022. A dataset for 2021/2022 or within the last 5 years it would be of more benefit towards the current generation of high school students as the curriculum has and will change over time. It would of even better benefit if we could acquire data consisting of results from schools in other countries to provide context as to how other countries compare against each other.\
 
-## Conclusion
+# Conclusion
 -   We believe our analysis of student academic grades for math course of two Portuguese secondary public school collected in 2006 was quite successful. As our two main analysis techniques of PCA and LDA gave us results that aligned with our reasons for using them.\
 
 -   With the PCA we successfully reduced the number of variables to 3 instead of 4. Shown by the favorable AIC, BIC and adjusted R squared scores of the PC123 model.\
 
--   After verifying assumptions our LDA gave us nice results as well. The G1 and G2 variables (first and second test scores) seemed to be the best indicator for classifying G3. This was represented nicely in the partition plots and later verified in the confusion matrix. This was a very satisfying insight as it aligns with common sense that the performances in other periods would best classify G1 performance.\
+-   After verifying assumptions our LDA gave us nice results as well. The G1 and G2 variables (first and second period scores) seemed to be the best indicator for classifying G3. This was represented nicely in the partition plots and later verified in the confusion matrix. This was a very satisfying insight as it aligns with common sense that the performances in other periods would best classify G1 performance.\
 
 -   Although very satisfied in our analysis of the data. It was only in reviewing the collection of this data that we began to question the relevance of this analysis. As mentioned in our problems it is difficult to see how data from 2005/2006 from Portugal holds relevance in 2021/2022. A more modern collection of data would be great next step to analyse especially after the fantastic insights we gained here.\
 
