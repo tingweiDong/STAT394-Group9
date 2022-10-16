@@ -350,4 +350,13 @@ Pass & 5 & 71 \\
 \end{table}
 
 
+# Problems
+-   We tried using a Naive Bayes model to see if it gives us a better model, but the result is not as good as LDA, and we do not show the results here.\
+
+-   There are many other variables in the original dataset. They may have some potential relationship between these variables that effect G3 and may give us a totally different result, or explain any anomalies present within the data. We did not have access to these variables hence we do not know the impact it may have on our analysis.\
+
+- The dataset used is only for students in 2005/2006, whereas it is currently 2022. A dataset for 2021/2022 or within the last 5 years it would be of more benefit towards the current generation of high school students as the curriculum has and will change over time. It would of even better benefit if we could acquire data consisting of results from schools in other countries to provide context as to how other countries compare against each other.\
+
+
+
 
