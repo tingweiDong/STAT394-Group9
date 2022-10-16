@@ -67,7 +67,7 @@ ORCID: 0000-0003-2959-5290\
 
 # Introduction
 
-The data is about student academic grades for math course of two Portuguese secondary public school during the 2005/2006 school year [@Dataset]. Student grades and their economic, social and demographic variables are included in the data. The data is based on the reports of two public schools (i.e., the grades of students and the number of absence days) and the questionnaire answers by the students. All of the demographic, economic and social variables were collected using the questionnaire. The dataset has 395 records in total with 5 numerical variables and 28 categorical variables. The numerical variables include age, number of school absences, 1st Period grade, 2nd period grade and final period grade. The categorical variables include sex, address(urban/rural), parents highest qualification, family size, commuting time, study time and so on.
+The data is about student academic grades for math course of two Portuguese secondary public school during the 2005/2006 school year [@Dataset]. Student grades and their economic, social and demographic variables are included in the data. The data is based on the reports of two public schools (i.e., the grades of students and the number of absence days) and a questionnaire answered by the students. All of the demographic, economic and social variables were collected using this questionnaire. The dataset has 395 records in total with 5 numerical variables and 28 categorical variables. The numerical variables include age, number of school absences, 1st Period grade, 2nd period grade and final period grade. The categorical variables include sex, address(urban/rural), parents highest qualification, family size, commuting time, study time and so on.
 
 We have two main leading questions for our analysis:\
 
@@ -606,7 +606,7 @@ Pass & 5 & 71 \\
 \end{tabular}(\#tab:testmat)
 \end{table}
 
-#Discussion
+# Discussion
 
 ## Problems
 -   We tried using a Naive Bayes model to see if it gives us a better model, but the result is not as good as LDA, and we do not show the results here.\
