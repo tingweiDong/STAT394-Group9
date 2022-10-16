@@ -357,6 +357,15 @@ Pass & 5 & 71 \\
 
 - The dataset used is only for students in 2005/2006, whereas it is currently 2022. A dataset for 2021/2022 or within the last 5 years it would be of more benefit towards the current generation of high school students as the curriculum has and will change over time. It would of even better benefit if we could acquire data consisting of results from schools in other countries to provide context as to how other countries compare against each other.\
 
+# Conclusion
+-   We believe our analysis of student academic grades for math course of two Portuguese secondary public school collected in 2006 was quite successful. As our two main analysis techniques of PCA and LDA gave us results that aligned with our reasons for using them.\
+
+-   With the PCA we successfully reduced the number of variables to 3 instead of 4. Shown by the favorable AIC, BIC and adjusted R squared scores of the PC123 model.\
+
+-   After verifying assumptions our LDA gave us nice results as well. The G1 and G2 variables (first and second period grade) seemed to be the best indicator for classifying G3. This was represented nicely in the partition plots and later verified in the confusion matrix. This was a very satisfying insight as it aligns with common sense that the performances in other periods would best classify G1 performance.\
+
+-   Although very satisfied in our analysis of the data. It was only in reviewing the collection of this data that we began to question the relevance of this analysis. As mentioned in our problems it is difficult to see how data from 2005/2006 from Portugal holds relevance in 2021/2022. A more modern collection of data would be great next step to analyse especially after the fantastic insights we gained here.\
+
 
 
 
