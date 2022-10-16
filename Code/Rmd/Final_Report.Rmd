@@ -1,5 +1,5 @@
 ---
-title: 'Final Report'
+title: 'Student Performance Analysis Report'
 author: "GROUP 9"
 classoption: 12pt
 output: bookdown::pdf_document2
@@ -38,16 +38,48 @@ df_num = data.frame(student$age, student$absences, student$G1, student$G2, stude
 names(df_num) <- c("age", "absences", "G1","G2","G3")
 ```
 
+# Author
+
+![](../../Images/JPG/Photo/Fugo%20Takefusa.jpg){width="100px"} 
+Fugo Takefusa\
+[takefufugo\@myvuw.ac.nz](mailto:takefufugo@myvuw.ac.nz){.email}\
+ORCID: 0000-0001-7373-8389\
+
+![](../../Images/JPG/Photo/Rhys%20Lewis-Woodley.jpg){width="100px"} 
+Rhys Lewis-Woodley\
+[lewisrhys\@myvuw.ac.nz](mailto:lewisrhys@myvuw.ac.nz){.email}\
+ORCID: 0000-0001-5414-0832\
+
+![](../../Images/JPG/Photo/Soumya%20Banerjee.jpg){width="100px"} 
+Soumya Banerjee\
+[banerjsoum\@myvuw.ac.nz](mailto:banerjsoum@myvuw.ac.nz){.email}\
+ORCID: 0000-0001-5678-5095\
+
+![](../../Images/JPG/Photo/Vivian%20Dong.jpg){width="100px"} 
+Vivian Dong\
+[dongting\@myvuw.ac.nz](mailto:dongting@myvuw.ac.nz){.email}\
+ORCID: 0000-0001-8356-8598\
+
+![](../../Images/JPG/Photo/Yi%20Zhang.jpg){width="100px"}
+Yi Zhang\
+[zhangyi11\@myvuw.ac.nz](mailto:zhangyi11@myvuw.ac.nz){.email}\
+ORCID: 0000-0003-2959-5290\
+
 # Introduction
 
 The data is about student academic grades for math course of two Portuguese secondary public school during the 2005/2006 school year [@Dataset]. Student grades and their economic, social and demographic variables are included in the data. The data is based on the reports of two public schools (i.e., the grades of students and the number of absence days) and the questionnaire answers by the students. All of the demographic, economic and social variables were collected using the questionnaire. The dataset have 395 records in total with 5 numerical variables and 28 categorical variables. The numerical variables include age, number of school absences, 1st Period grade, 2nd period grade and final period grade. The categorical variables include sex, address(urban/rural), parents highest qualification, family size, commuting time, study time and so on.
 
+We have two main leading questions for our analysis:\
 
-We are motivated by this dataset since we are students of Math and Statistics school and interested in what features have associations with overall math grade. It would be interesting to explore the performance of students in math course by demographic variables (e.g., does math grade differ by gender?). It could also be interesting to find how economic status of parent of student relates to the grade. Our initial goal of this project is to find the important predictors of student grade out of many demographic, economic and social features.
+- Can Principal Component Analysis - PCA reduce the number of dimensions to model the students' final grade?\
 
-## EDA
+- Can we have a discriminant model to classify students whether they pass or fail based on the other features(e.g., first test grade, age, etc)?\
 
-### Categorical Summary
+Since we have too many categorical variables, for our data analysis, we will only include three categorical variables, which is school, sex and number of past failures.\
+
+# Exploratory Data Analysis - EDA
+
+## Categorical Summary
 
 Three categorical variables:\
 School - student's school ('GP' - Gabriel Pereira or 'MS' - Mousinho da Silveira)\
@@ -89,7 +121,7 @@ lapply(names(df), function(col) {
 grid.arrange(lp[[1]], lp[[2]], lp[[3]], ncol = 3)
 ```
 
-### Numerical Summary
+## Numerical Summary
 Five numerical Variables:\
 Age - student's age (from 15 to 22)\
 Absences - number of school absences (from 0 to 93)\
@@ -260,54 +292,13 @@ hc.order = TRUE,
 type = "lower")
 ```
 
-## Box Plot
-
-The Figure&nbsp;\@ref(fig:box) shows the box plots of final grade, number of absences and age grouped by the three categorical variables (School, Sex and Failures). The box plots show that the final grade does not differ much among school or sex but it differs by the number of past failures. Even though there are variations, those with fewer number of failures tend to have higher final grades. All box plot for the number of absences shows that they are heavily skewed to large number. The box plot for age shows that Mousinho da Silveira school have higher median age compared to Gabriel Pereira school.
-
-
-
-```{r box, fig.height=6, fig.cap="Boxplot of Final grade against 3 categorical variables", echo=FALSE, warning=FALSE, message=FALSE}
-lp <- list()
-df_all <- cbind(df, df_num)
-for (i in 1:length(names(df))){
-   lp[[i]] <- ggplot(df_all, aes_string(x=names(df)[i], y="G3", col = names(df)[[i]])) + 
-    geom_boxplot(notch=TRUE) +
-     labs(y="Final Grade")
-}
-
-lp2 <- list()
-for (i in 1:length(names(df))){
-   lp2[[i]] <- ggplot(df_all, aes_string(x=names(df)[i], y="absences", col = names(df)[[i]])) + 
-    geom_boxplot(notch=TRUE) +
-     labs(y="Number of Absences")
-}
-
-lp3 <- list()
-for (i in 1:length(names(df))){
-   lp3[[i]] <- ggplot(df_all, aes_string(x=names(df)[i], y="age", col = names(df)[[i]])) + 
-    geom_boxplot(notch=TRUE) +
-     labs(y="Age")
-}
-
-
-grid.arrange(lp[[1]], lp[[2]], lp[[3]],
-             lp2[[1]], lp2[[2]], lp2[[3]],
-             lp3[[1]], lp3[[2]], lp3[[3]],ncol = 3)
-```
-
-
-
 \newpage
-
-
-
-
 # Methodology
 
 We have used two methods to analyse the student performance dataset. Firstly, we have used Principle Component Analysis to see if we can reduce the number of variables to model the students' final grade. We have four numerical predictors(First test score, Second test score, Number of absences and Age). we would like to reduce the by using PCA. Secondly, we have used Linear Discriminant Analysis to classify the students whether they pass or fail the math course based on the other predictors. We have used 70% of the data to train LDA and 30% of the data to validate the model.
 
 
-# PCA
+# Principal Component Analysis - PCA
 
 ## PCA Details
 
