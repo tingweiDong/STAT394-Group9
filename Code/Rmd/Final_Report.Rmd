@@ -38,7 +38,7 @@ df_num = data.frame(student$age, student$absences, student$G1, student$G2, stude
 names(df_num) <- c("age", "absences", "G1","G2","G3")
 ```
 
-# Author
+# Authors
 
 ![](../../Images/JPG/Photo/Fugo%20Takefusa.jpg){width="100px"} 
 Fugo Takefusa\
