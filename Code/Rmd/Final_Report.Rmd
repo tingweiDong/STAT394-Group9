@@ -67,7 +67,7 @@ ORCID: 0000-0003-2959-5290\
 
 # Introduction
 
-The data is about student academic grades for math course of two Portuguese secondary public school during the 2005/2006 school year [@Dataset]. Student grades and their economic, social and demographic variables are included in the data. The data is based on the reports of two public schools (i.e., the grades of students and the number of absence days) and the questionnaire answers by the students. All of the demographic, economic and social variables were collected using the questionnaire. The dataset have 395 records in total with 5 numerical variables and 28 categorical variables. The numerical variables include age, number of school absences, 1st Period grade, 2nd period grade and final period grade. The categorical variables include sex, address(urban/rural), parents highest qualification, family size, commuting time, study time and so on.
+The data is about student academic grades for math course of two Portuguese secondary public school during the 2005/2006 school year [@Dataset]. Student grades and their economic, social and demographic variables are included in the data. The data is based on the reports of two public schools (i.e., the grades of students and the number of absence days) and the questionnaire answers by the students. All of the demographic, economic and social variables were collected using the questionnaire. The dataset has 395 records in total with 5 numerical variables and 28 categorical variables. The numerical variables include age, number of school absences, 1st Period grade, 2nd period grade and final period grade. The categorical variables include sex, address(urban/rural), parents highest qualification, family size, commuting time, study time and so on.
 
 We have two main leading questions for our analysis:\
 
@@ -606,15 +606,16 @@ Pass & 5 & 71 \\
 \end{tabular}(\#tab:testmat)
 \end{table}
 
+#Discussion
 
-# Problems
+## Problems
 -   We tried using a Naive Bayes model to see if it gives us a better model, but the result is not as good as LDA, and we do not show the results here.\
 
 -   There are many other variables in the original dataset. They may have some potential relationship between these variables that effect G3 and may give us a totally different result, or explain any anomalies present within the data. We did not have access to these variables hence we do not know the impact it may have on our analysis.\
 
 - The dataset used is only for students in 2005/2006, whereas it is currently 2022. A dataset for 2021/2022 or within the last 5 years it would be of more benefit towards the current generation of high school students as the curriculum has and will change over time. It would of even better benefit if we could acquire data consisting of results from schools in other countries to provide context as to how other countries compare against each other.\
 
-# Conclusion
+## Conclusion
 -   We believe our analysis of student academic grades for math course of two Portuguese secondary public school collected in 2006 was quite successful. As our two main analysis techniques of PCA and LDA gave us results that aligned with our reasons for using them.\
 
 -   With the PCA we successfully reduced the number of variables to 3 instead of 4. Shown by the favorable AIC, BIC and adjusted R squared scores of the PC123 model.\
