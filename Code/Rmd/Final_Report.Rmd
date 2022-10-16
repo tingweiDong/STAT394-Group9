@@ -20,6 +20,7 @@ require(psych)
 require(MASS)
 require(klaR)
 require(HDtest)
+require(ggcorrplot)
 ```
 
 
@@ -39,16 +40,271 @@ names(df_num) <- c("age", "absences", "G1","G2","G3")
 
 # Introduction
 
--   The data [@Dataset] is about student academic grades for math course of two Portuguese secondary public school during the 2005/2006 school year.
--   The dataset have 395 records in total with 5 numerical variables and 28 categorical variables.
-    -   The numerical variables include age, number of school absences, 1st Period grade(G1), 2nd period grade(G2) and final period grade(G3, target variable).
-    -   Since we have too many categorical variables, for our data analysis, we will only include school, sex and number of past failures.
+The data is about student academic grades for math course of two Portuguese secondary public school during the 2005/2006 school year [@Dataset]. Student grades and their economic, social and demographic variables are included in the data. The data is based on the reports of two public schools (i.e., the grades of students and the number of absence days) and the questionnaire answers by the students. All of the demographic, ecnomic and social variables were collected using the questionnaire. The dataset have 395 records in total with 5 numerical variables and 28 categorical variables. The numerical variables include age, number of school absences, 1st Period grade, 2nd period grade and final period grade. The categorical variables include sex, address(urban/rural), parents highest qualification, family size, commuting time, study time and so on.
+
+
+We are motivated by this dataset since we are students of Math and Statistics school and interested in what features have associations with overall math grade. It would be interesting to explore the performance of students in math course by demographic variables (e.g., does math grade differ by gender?). It could also be interesting to find how economic status of parent of student relates to the grade. Our initial goal of this project is to find the important predictors of student grade out of many demographic, economic and social features.
+
+## EDA
+
+### Categorical Summary
+
+Three categorical variables:\
+School - student's school ('GP' - Gabriel Pereira or 'MS' - Mousinho da Silveira)\
+Sex - student's sex ('F' - female or 'M' - male)\
+Failures - number of past class failures (n if 1<=n<3, else 4)\
+
+The table \@ref(tab:summary) and Figure&nbsp;\@ref(fig:ct) show the count of each categorical variables. There are more students from Gabriel Pereira school than Mousinho da Silveira school. There are slightly higher number of female students compared to male students. Most of the students never failed the other courses before.
+
+```{r CateSum, echo=FALSE}
+student$school <- as.factor(student$school)
+student$sex <- as.factor(student$sex)
+student$failures <- as.factor(student$failures)
+df = data.frame(student$school,student$sex,student$failures)
+names(df) = c("School", "Sex", "Failures")
+#xtable(summary(df))
+```
+
+\begin{table}[ht]
+\centering
+\caption {Summary of Three Categorical Variables}
+\begin{tabular}{lll}
+  \hline
+ School & Sex & Failures \\ 
+  \hline
+GP:349   & F:208   & 0:312   \\ 
+MS: 46   & M:187   & 1: 50   \\ 
+  &  & 2: 17   \\ 
+  &  & 3: 16   \\ 
+   \hline
+\end{tabular} (\#tab:summary)
+\end{table}
+
+
+```{r ct, fig.height=4, fig.cap="Barplot for Categorical Variables", fig.pos="center", echo=FALSE, warning=FALSE}
+lapply(names(df), function(col) {
+  ggplot(df, aes(.data[[col]], ..count..)) + 
+    geom_bar(aes(fill = .data[[col]]), position = "dodge")
+}) -> lp
+grid.arrange(lp[[1]], lp[[2]], lp[[3]], ncol = 3)
+```
+
+### Numerical Summary
+Five numerical Variables:\
+Age - student's age (from 15 to 22)\
+Absences - number of school absences (from 0 to 93)\
+G1 - first period grade (from 0 to 20)\
+G2 - second period grade (from 0 to 20)\
+G3 - final grade (from 0 to 20, output target)\
+
+The table \@ref(tab:numsum) shows five numeric variable statistic summary includes: minimum, first quartile, median, third quartile, and maximum.\
+The table \@ref(tab:means) and table \@ref(tab:covariance) show five numeric variable means and covariance.\
+The covariance between age and absences, G1 and G2 and G3, G3 and absences are positive, this means both variables will tend to move upward or downward in value at the same time. For example, when a student have a higher mark in G1, and this student may have higher mark in G3.\
+The covariance between age and G1 and G2 and G3, absences and G1 and G2 and G3 are negative, this means variables will move away from each other. For example, a student have more number of absences, this student may get lower mark in G1, G2 and G3.\
+
+```{r NumSum, echo=FALSE}
+df_num = data.frame(student$age, student$absences, 
+                    student$G1, student$G2, student$G3)
+names(df_num) <- c("age", "absences", "G1","G2","G3")
+#summary(df_num)
+```
+
+\begin{table}[ht]
+\centering
+\caption {Summary of Five numerical Variables}
+\begin{tabular}{llllll}
+  \hline
+ & age & absences & G1 & G2 & G3 \\ 
+  \hline
+Min. & 15.0 & 0.0   & 3.0 & 0.0 &  0.0  \\
+1st Qu. & 16.0 & 0.0   & 8.0 & 9.0 &  8.0  \\ 
+Median & 17.0 & 4.0   & 11.0 & 11.0 &  11.0  \\
+3rd Qu. & 18.0 & 8.0   & 13.0 & 13.0 &  14.0  \\
+Max. & 22.0 & 75.0   & 19.0 & 19.0 &  20.0  \\
+   \hline
+\end{tabular} (\#tab:numsum)
+\end{table}
+
+```{r nummean,echo=FALSE}
+df_num.mean<-colMeans(df_num)
+```
+
+\begin{table}[ht]
+\centering
+\caption {Means of Five numerical Variables}
+\begin{tabular}{lllll}
+  \hline
+ age & absences & G1 & G2 & G3 \\ 
+  \hline
+16.696   & 5.709   & 10.909 & 10.714 &  10.415  \\ 
+   \hline
+\end{tabular} (\#tab:means)
+\end{table}
+
+```{r covmat,echo=FALSE}
+#cov(df_num)
+```
+
+\begin{table}[ht]
+\centering
+\caption {Covariance of Five numerical Variables}
+\begin{tabular}{llllll}
+  \hline
+ & age & absences & G1 & G2 & G3 \\ 
+  \hline
+age & 1.628   & 1.790   & -0.271 & -0.689 &  -0.945  \\
+absences & 1.790   & 64.050   & -0.824 & -0.957 &  1.256  \\ 
+G1 & -0.271   & -0.824   & 11.017 & 10.639 &  12.188  \\
+G2 & -0.689   & -0.957   & 10.639 & 14.149 &  15.594  \\
+G3 & -0.945   & 1.256   & 12.188 & 15.594 &  20.990  \\
+   \hline
+\end{tabular} (\#tab:covariance)
+\end{table}
+
+\newpage
+Figure \@ref(fig:numplt) shows the count of five numerical variables. Red dashed line as mean and a fitted density in purple.
+
+```{r numplt,fig.height=4, fig.cap="Barplot for Numerical Variables", fig.pos="center", echo=FALSE, warning=FALSE}
+lp2 <- list()
+
+lp2[[1]] <- ggplot(data.frame(df_num$age), aes(x=df_num$age)) +
+  geom_histogram(aes(y=..density..),
+                 bins=nclass.FD(df_num$age),
+                 col="black", fill="white") +
+  geom_vline(xintercept = df_num.mean[1], col="red",linetype="dashed")+
+  geom_density(kernel="epanechnikov", size=.3, col="purple", alpha=.1) +
+  xlab("Age") +
+  ylab("Count") +
+  theme(text=element_text(size=12, 
+        family="serif"))
+
+lp2[[2]] <- ggplot(data.frame(df_num$absences), aes(x=df_num$absences)) +
+  geom_histogram(aes(y=..density..),
+                 bins=nclass.FD(df_num$absences),
+                 col="black", fill="white") +
+  geom_vline(xintercept = df_num.mean[2], col="red",linetype="dashed")+
+  geom_density(kernel="epanechnikov", size=.3, col="purple", alpha=.1) +
+  xlab("Absences") +
+  ylab("Count") +
+  theme(text=element_text(size=12, 
+        family="serif"))
+
+lp2[[3]] <- ggplot(data.frame(df_num$G1), aes(x=df_num$G1)) +
+  geom_histogram(aes(y=..density..),
+                 bins=nclass.FD(df_num$G1),
+                 col="black", fill="white") +
+  geom_vline(xintercept = df_num.mean[3], col="red",linetype="dashed")+
+  geom_density(kernel="epanechnikov", size=.3, col="purple", alpha=.1) +
+  xlab("G1") +
+  ylab("Count") +
+  theme(text=element_text(size=12, 
+        family="serif"))
+
+lp2[[4]] <- ggplot(data.frame(df_num$G2), aes(x=df_num$G3)) +
+  geom_histogram(aes(y=..density..),
+                 bins=nclass.FD(df_num$G3),
+                 col="black", fill="white") +
+  geom_vline(xintercept = df_num.mean[4], col="red",linetype="dashed")+
+  geom_density(kernel="epanechnikov", size=.3, col="purple", alpha=.1) +
+  xlab("G2") +
+  ylab("Count") +
+  theme(text=element_text(size=12, 
+        family="serif"))
+
+lp2[[5]] <- ggplot(data.frame(df_num$G3), aes(x=df_num$G3)) +
+  geom_histogram(aes(y=..density..),
+                 bins=nclass.FD(df_num$G3),
+                 col="black", fill="white") +
+  geom_vline(xintercept = df_num.mean[5], col="red",linetype="dashed")+
+  geom_density(kernel="epanechnikov", size=.3, col="purple", alpha=.1) +
+  xlab("G3") +
+  ylab("Count") +
+  theme(text=element_text(size=12, 
+        family="serif"))
+
+grid.arrange(lp2[[1]], lp2[[2]], lp2[[3]],lp2[[4]],lp2[[5]],nrow = 2,ncol = 3)
+```
+
+
+## Correlation Matrix and plot
+
+Table \@ref(tab:correlation) and Figure \@ref(fig:corplt) shows the correlation between all five numerical variables.\
+From the table and figure we get that G1, G2 and G3 are have a strong positive correlation.\
+Between G2 and G3 have the strongest positive correlation, which is 0.905.\
+Between age and G1, G2, G3, they have a low negative correlation.\
+
+```{r cormat,echo=FALSE}
+#cor(df_num)
+```
+
+\begin{table}[ht]
+\centering
+\caption {Correlation Matrix of Five numerical Variables}
+\begin{tabular}{llllll}
+  \hline
+ & age & absences & G1 & G2 & G3 \\ 
+  \hline
+age & 1.000   & 0.175   & -0.064 & -0.143 &  -0.162  \\
+absences & 0.175   & 1.000   & -0.031 & -0.032 &  0.034  \\ 
+G1 & -0.064   & -0.031   & 1.000 & 0.852 &  0.801  \\
+G2 & -0.143   & -0.032   & 0.852 & 1.000 &  0.905  \\
+G3 & -0.162   & 0.034   & 0.801 & 0.905 &  1.000  \\
+   \hline
+\end{tabular} (\#tab:correlation)
+\end{table}
+
+```{r corplt,fig.height=4, fig.cap="Correlation between five Numerical Variables", fig.pos="center", echo=FALSE, warning=FALSE}
+ggcorrplot(cor(df_num),
+method = "circle",
+hc.order = TRUE,
+type = "lower")
+```
+
+## Box Plot
+
+The Figure&nbsp;\@ref(fig:box) shows the box plots of final grade, number of absences and age grouped by the three categorical variables (School, Sex and Failures). The box plots show that the final grade does not differ much among school or sex but it differs by the number of past failures. Even though there are variations, those with fewer number of failures tend to have higher final grades. All box plot for the number of absences shows that they are heavily skewed to large number. The box plot for age shows that Mousinho da Silveira school have higher median age compared to Gabriel Pereira school.
+
+
+
+```{r box, fig.height=6, fig.cap="Boxplot of Final grade against 3 categorical variables", echo=FALSE, warning=FALSE, message=FALSE}
+lp <- list()
+df_all <- cbind(df, df_num)
+for (i in 1:length(names(df))){
+   lp[[i]] <- ggplot(df_all, aes_string(x=names(df)[i], y="G3", col = names(df)[[i]])) + 
+    geom_boxplot(notch=TRUE) +
+     labs(y="Final Grade")
+}
+
+lp2 <- list()
+for (i in 1:length(names(df))){
+   lp2[[i]] <- ggplot(df_all, aes_string(x=names(df)[i], y="absences", col = names(df)[[i]])) + 
+    geom_boxplot(notch=TRUE) +
+     labs(y="Number of Absences")
+}
+
+lp3 <- list()
+for (i in 1:length(names(df))){
+   lp3[[i]] <- ggplot(df_all, aes_string(x=names(df)[i], y="age", col = names(df)[[i]])) + 
+    geom_boxplot(notch=TRUE) +
+     labs(y="Age")
+}
+
+
+grid.arrange(lp[[1]], lp[[2]], lp[[3]],
+             lp2[[1]], lp2[[2]], lp2[[3]],
+             lp3[[1]], lp3[[2]], lp3[[3]],ncol = 3)
+```
+
+
+
+\newpage
+
 
 
 
 # Methodology
 
-We have used two methods to analyse the student performance dataset. Firstly, we have used Priciple Component Analysis to see if we can reduce the number of variables to model the students' final grade. We have four numerical predictors(First test score, Second test score, Number of absences and Age). we would like to reduce the by using PCA. Secondly, we have used Linear Discriminant Analysis to classify the students whether they pass or fail the math course based on the other predictors. We have used 70% of the data to train LDA and 30% of the data to validate the model.
+We have used two methods to analyse the student performance dataset. Firstly, we have used Principle Component Analysis to see if we can reduce the number of variables to model the students' final grade. We have four numerical predictors(First test score, Second test score, Number of absences and Age). we would like to reduce the by using PCA. Secondly, we have used Linear Discriminant Analysis to classify the students whether they pass or fail the math course based on the other predictors. We have used 70% of the data to train LDA and 30% of the data to validate the model.
 
 # PCA
 
